@@ -1,5 +1,9 @@
 # Tabla resumen de los últimos datos
 
+#Colores para value box https://rdrr.io/cran/shinydashboard/man/validColors.html
+#Iconos para value box https://fontawesome.com/search?q=hotel&o=r&m=free&s=solid
+
+library(googlesheets4)
 library(tidyverse)
 library(gt)
 library(glue)
@@ -11,22 +15,41 @@ library(shinydashboard)
 library(highcharter)
 library(lubridate)
 library(comunicacion)
+library(plotly) #para graficos interactivos
+library(shinyWidgets) #para los popup
 
+
+
+googlesheets4::gs4_deauth()
+
+
+#Source para cargar la función 
 source("custom_box.R")
 
-# PALETAS Y FUENTES ------------------------------------------------------------
-# Paleta colores Presidencia
-cols_arg <- "#37BBED" # Celeste Institucional
+#Cargo bases de datos
 
-# Secundarios
-cols_arg2 <- c("#EE3D8F", # "ROJO"
-               "#50B8B1", # "VERDE"
-               "#F7941E","#FFD100","#D7DF23", "#9283BE")
+turismo_internacional_vias <- read_file_srv("/srv/DataDNMYE/imet/serie_ti_vias.csv") #los datos de esta base corresponden a turistas nada más (no inlcuye excursionistas)
 
-familia_fuente <- "Encode Sans"
+turismo_interno <- read_file_srv("/srv/DataDNMYE/imet/serie_evyth.csv")
 
-turismo_internacional_vias <- read_file_srv("/srv/DataDNMYE/imet/serie_ti_vias.csv")
-# NOTA: los datos de esta base corresponden a turistas nada más (no inlcuye excursionistas)
+eoh <- read_file_srv("/srv/DataDNMYE/imet/eoh_imet.csv") %>% 
+  mutate(year= as.numeric(str_sub(indice_tiempo, end = 4L)),
+         month= as.numeric(str_sub(indice_tiempo, start = 6L, end = 7L)))
+
+emae <- data_serie_emae <- read_file_srv("/srv/DataDNMYE/economia2/emae_imet.csv") 
+
+empleo <- read_sheet("https://docs.google.com/spreadsheets/d/1ff3v_hxPxhu5kovPJYKnubifIvswD1-nQzdcqWFj3I4/edit#gid=0")
+  
+turistas_omt <- 
+  
+conectividad_internacional <- read_file_srv("/srv/DataDNMYE/imet/internacional_empresas_completa.csv") 
+
+conectividad_cabotaje <- read_file_srv("/srv/DataDNMYE/imet/cabotaje_empresas_completa.csv") 
+  
+
+
+#Armo bases para graficos
+#Turismo internacional
 
 data_grafico_ti <- turismo_internacional_vias %>%
   filter(year >=2019 ) %>% 
@@ -41,11 +64,64 @@ data_grafico_ti <- turismo_internacional_vias %>%
   pivot_wider(names_from = "direccion", 
               values_from = "n") 
 
-# GRAFICO
-grafico_ti <- ggplot(data_grafico_ti)+
-  geom_line(aes(period, receptivo),
-            size = 1, alpha = .5) 
+
+data_grafico_evyth <- turismo_interno %>%
+  filter(row_number() !=n()) %>% #para cuando no queremos que salga la ultima fila (porque es otro trimestre)
+  select(anio, trimestre,tur) %>% 
+  mutate(date= lubridate::yq(paste(anio, trimestre, "-")),
+        turistas = ifelse(is.na(tur), 0, tur),
+         variacion_tur = round(turistas/lag(turistas, n = 4)-1,2), 
+         turistas = round(turistas/1000000,1),
+         fecha= paste0(trimestre,"° trim ",anio))
 
 
+data_grafico_eoh <- eoh%>% 
+  mutate(date= lubridate::ym(paste(year, month, "-")),
+         year= as.numeric(str_sub(indice_tiempo, end = 4L)),
+         month= as.numeric(str_sub(indice_tiempo, start = 6L, end = 7L)),
+         viajeros_total= (viajeros_res+viajeros_nores)/1000000,
+         pernoc_total= (pernoc_res+pernoc_nores)/1000000,
+         viajeros_tot= round(viajeros_total,1),
+         pernoc_tot= round(pernoc_total,1),
+         var_ia_viajeros=round(viajeros_total/lag(viajeros_total, n=12)-1,2),
+         var_ia_pernoc=round(pernoc_total/lag(pernoc_total, n=12)-1,2))
+
+data_grafico_empleo <- empleo %>% 
+  mutate_at(.vars = vars(everything()),
+            .funs = ~ as.numeric(.)) %>% 
+  select(year, month, empleo_hyr_ce, empleo_hyr_se) %>% 
+  mutate(date= lubridate::ym(paste(year, month, "-")),
+         var_mensual=round(empleo_hyr_se/lag(empleo_hyr_se, n=1)-1,3))
+  
+data_grafico_emae <- emae %>% 
+  select(year, month, emae_hyr_ce) %>% 
+  mutate(date= lubridate::ym(paste(year, month, "-")),
+         var_ia_emae_hyr=round(emae_hyr_ce/lag(emae_hyr_ce, n=12)-1,2)) %>% 
+  filter(year>=2018)
+
+data_grafico_conectividad_internacional  <-  conectividad_internacional %>% 
+  rename(anio = anio_local, mes = mes_local,empresa = empresa_agrup_def) %>% 
+  filter(regular_noregular == 1) %>%
+  select(anio, mes, pax) %>% 
+  group_by(anio, mes) %>% 
+  summarise(pax=sum(pax)) %>% 
+  ungroup() %>% 
+  mutate(date= lubridate::ym(paste(anio, mes, "-")),
+         var_ia_pax_int=round(pax/lag(pax, n=12)-1,3),
+         pax_miles=round(pax/1000,1))
+  
+
+data_grafico_conectividad_cabotaje  <-  conectividad_cabotaje %>% 
+  rename(anio = anio_local,
+         mes = mes_local,
+         empresa = empresa_agrup_def ) %>%  
+  select(anio, mes, pax) %>% 
+  group_by(anio, mes) %>% 
+  summarise(pax=sum(pax)) %>% 
+  ungroup() %>% 
+  mutate(date= lubridate::ym(paste(anio, mes, "-")),
+         var_ia_pax_cab=round(pax/lag(pax, n=12)-1,3),
+         pax_miles=round(pax/1000000,1))
+  
  
   
