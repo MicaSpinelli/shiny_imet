@@ -40,7 +40,8 @@ emae <- data_serie_emae <- read_file_srv("/srv/DataDNMYE/economia2/emae_imet.csv
 
 empleo <- read_sheet("https://docs.google.com/spreadsheets/d/1ff3v_hxPxhu5kovPJYKnubifIvswD1-nQzdcqWFj3I4/edit#gid=0")
   
-turistas_omt <- 
+tur_mundo <- read_sheet("https://docs.google.com/spreadsheets/d/1O-RQY8m1_kSmJxpAZEv19Lcfe1oRcq_Ltur3lgH1Mf4/edit#gid=0") %>% 
+                select(year,period,mund)
   
 conectividad_internacional <- read_file_srv("/srv/DataDNMYE/imet/internacional_empresas_completa.csv") 
 
@@ -121,7 +122,7 @@ data_grafico_conectividad_cabotaje  <-  conectividad_cabotaje %>%
   ungroup() %>% 
   mutate(date= lubridate::ym(paste(anio, mes, "-")),
          var_ia_pax_cab=round(pax/lag(pax, n=12)-1,3),
-         pax_miles=round(pax/1000000,1))
+         pax_mill=round(pax/1000000,1))
   
  
   

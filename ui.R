@@ -23,7 +23,7 @@ dashboardPage(
     ),
     fluidRow(column(4, valueBoxOutput("box_conectividad_cab",width = "100%")),
              column(4, valueBoxOutput("box_conectividad_int", width = "100%")),
-             column(4, valueBoxOutput("box_turismo_mundo", width = "100%"))
+             column(4, valueBoxOutput("box_tur_mundo", width = "100%"))
              
     )
 ))

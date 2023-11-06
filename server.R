@@ -297,6 +297,16 @@ function(input, output) {
   
   output$box_eoh_pernoctes <- renderValueBox({ #id a usar en la UI
     
+    mes_eoh <- data_grafico_eoh %>% 
+      tail(1) %>% 
+      pull(date) %>% 
+      months()
+    
+    anio_eoh <- data_grafico_eoh %>% 
+      tail(1) %>% 
+      pull(date) %>% 
+      year()
+    
     #calculo de ultimo dato y var i.a.
     ultimo_dato_eoh_pernoctes <- data_grafico_eoh%>% 
       tail(1) %>% 
@@ -454,7 +464,7 @@ function(input, output) {
     #calculo de ultimo dato y var i.a.
     ultimo_dato_pax_int <- data_grafico_conectividad_internacional%>% 
       tail(1) %>% 
-      pull(pax) %>% 
+      pull(pax_miles) %>% 
       format(decimal.mark=",")
     
     var_ia_conectividad_int <- data_grafico_conectividad_internacional %>% 
@@ -464,19 +474,19 @@ function(input, output) {
     
     
     valueBoxSpark(
-      value = paste0 (ultimo_dato_pax_int, " miles"), #indicador
+      value = paste0 (ultimo_dato_pax_int, " mil"), #indicador
       subtitle =  ifelse(var_ia_conectividad_int>0, paste0("+",lbl_percent(var_ia_conectividad_int)," var i.a."),paste0(lbl_percent(var_ia_conectividad_int)," var i.a.")), #texto de abajo
       description = "pasajeros transportados en vuelos internacionales", #texto debajo del indicador
       minititle = paste0("Conectividad aérea internacional ", mes_conectividad, " ", anio_conectividad), #texto de arriba
       icon = icon("plane-up"), #icono de fontawesome
       infoID = "conectividad_i", #id para icono de info
       idPlot = "grafico_conectividad_int", #id del renderPlotly
-      color = "yellow" #color
+      color = "purple" #color
     )
     
   })
   
-  ###############CONECTIVIDAD CABOTAJE#####################
+###############CONECTIVIDAD CABOTAJE#####################
   output$box_conectividad_cab <- renderValueBox({ #id a usar en la UI
     
     mes_conectividad <- data_grafico_conectividad_cabotaje %>% 
@@ -493,7 +503,7 @@ function(input, output) {
     #calculo de ultimo dato y var i.a.
     ultimo_dato_pax_cab <- data_grafico_conectividad_cabotaje%>% 
       tail(1) %>% 
-      pull(pax) %>% 
+      pull(pax_mill) %>% 
       format(decimal.mark=",")
     
     var_ia_conectividad_cab <- data_grafico_conectividad_cabotaje %>% 
@@ -510,7 +520,38 @@ function(input, output) {
       icon = icon("plane-up"), #icono de fontawesome
       infoID = "conectividad_c", #id para icono de info
       idPlot = "grafico_conectividad_cab", #id del renderPlotly
-      color = "yellow" #color
+      color = "fuchsia" #color
+    )
+    
+  })
+
+###############TURISMO EN EL MUNDO#####################
+  output$box_tur_mundo <- renderValueBox({ #id a usar en la UI
+    
+    #calculo de ultimo dato y var i.a.
+    var_23 <- tur_mundo%>% 
+      filter(row_number() !=n()) %>% 
+      pull(mund) %>% 
+      as.numeric() %>% 
+      format(decimal.mark=",")
+    
+    var_19 <- tur_mundo %>% 
+      tail(1) %>% 
+      pull(mund) %>% 
+      as.numeric() %>% 
+      format(decimal.mark=",")
+    
+    
+    
+    valueBoxSpark(
+      value = paste0(var_23, " var i.a."), #indicador
+      subtitle =  paste0(var_19, "% var vs 2019"), #texto de abajo
+      description = "llegadas de turistas internacionales", #texto debajo del indicador
+      minititle = "Turismo en el mundo 2° trim 2023", #texto de arriba
+      icon = icon("earth-americas"), #icono de fontawesome
+      infoID = "tur_mundo", #id para icono de info
+      idPlot = "", #id del renderPlotly
+      color = "lime" #color
     )
     
   })
@@ -611,6 +652,17 @@ function(input, output) {
                    title = "Conectividad", #titulo del popup
                    text = HTML(paste("Para más información visitá el",tags$a( href="https://tableros.yvera.tur.ar/conectividad/",
                                                                               "Tablero interactivo"))),  #texto descriptivo, se pueden poner etiquetas html
+                   btn_labels = NA,
+                   html = TRUE#no mostrar botones que vienen por default
+    )
+  })
+  
+  observeEvent(input$tur_mundo,{ #infoID que se puso en la función de arriba 
+    
+    sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
+                   title = "Turismo en el mundo", #titulo del popup
+                   text = HTML(paste("Para más información visitá el",tags$a( href="https://biblioteca.yvera.tur.ar/coyuntura.html",
+                                                                              "Informe mensual de estadísticas de turismo"))),  #texto descriptivo, se pueden poner etiquetas html
                    btn_labels = NA,
                    html = TRUE#no mostrar botones que vienen por default
     )
