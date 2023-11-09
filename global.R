@@ -40,20 +40,53 @@ emae <- data_serie_emae <- read_file_srv("/srv/DataDNMYE/economia2/emae_imet.csv
 
 empleo <- read_sheet("https://docs.google.com/spreadsheets/d/1ff3v_hxPxhu5kovPJYKnubifIvswD1-nQzdcqWFj3I4/edit#gid=0")
   
-tur_mundo <- read_sheet("https://docs.google.com/spreadsheets/d/1O-RQY8m1_kSmJxpAZEv19Lcfe1oRcq_Ltur3lgH1Mf4/edit#gid=0") %>% 
-                select(year,period,mund)
+tur_mundo <- read_sheet("https://docs.google.com/spreadsheets/d/1O-RQY8m1_kSmJxpAZEv19Lcfe1oRcq_Ltur3lgH1Mf4/edit#gid=481565092",
+                        sheet = 2)
+                
   
 conectividad_internacional <- read_file_srv("/srv/DataDNMYE/imet/internacional_empresas_completa.csv") 
 
 conectividad_cabotaje <- read_file_srv("/srv/DataDNMYE/imet/cabotaje_empresas_completa.csv") 
   
 
+#Armo ultimos meses
+
+ultimo_ti <- turismo_internacional_vias %>% 
+  tail(1) %>% 
+  pull(month)
+  
+ultimo_eoh <- eoh %>% 
+  tail(1) %>% 
+  pull(month)
+  
+ultimo_conectividad <- conectividad_internacional %>% 
+  tail(1) %>% 
+  pull(mes_local)
+
+ultimo_evyth <- turismo_interno %>% 
+  filter(row_number() !=n()) %>% #para cuando no queremos que salga la ultima fila (porque es otro trimestre)
+  tail(1) %>%
+  pull(trimestre)
+  
+ultimo_tur_mundo <- tur_mundo %>% 
+  tail(1) %>%
+  pull(mes)
+  
+ultimo_emae <- emae %>% 
+  tail(1) %>%
+  pull(month)
+  
+ultimo_empleo <- empleo %>% 
+  tail(1) %>%
+  pull(month) %>% 
+  as.numeric()
+
 
 #Armo bases para graficos
 #Turismo internacional
 
 data_grafico_ti <- turismo_internacional_vias %>%
-  filter(year >=2019 ) %>% 
+  #filter(year >=2018) %>% 
   pivot_longer(cols = c(3:length(.)), names_to = "indicador", values_to = "n")  %>%
   filter(str_detect(string = indicador, pattern = "total", negate = T)) %>%
   mutate(direccion = case_when(str_detect(indicador, "emisivo") ~ "emisivo", T ~ "receptivo"), 
@@ -63,7 +96,8 @@ data_grafico_ti <- turismo_internacional_vias %>%
   group_by(direccion, period) %>% 
   summarise(n = sum(n), .groups = "drop") %>%
   pivot_wider(names_from = "direccion", 
-              values_from = "n") 
+              values_from = "n") %>% 
+  mutate(month=as.numeric(substr(period, 6,7)))
 
 
 data_grafico_evyth <- turismo_interno %>%
@@ -85,7 +119,8 @@ data_grafico_eoh <- eoh%>%
          viajeros_tot= round(viajeros_total,1),
          pernoc_tot= round(pernoc_total,1),
          var_ia_viajeros=round(viajeros_total/lag(viajeros_total, n=12)-1,2),
-         var_ia_pernoc=round(pernoc_total/lag(pernoc_total, n=12)-1,2))
+         var_ia_pernoc=round(pernoc_total/lag(pernoc_total, n=12)-1,2)) 
+  #filter(year>=2018)
 
 data_grafico_empleo <- empleo %>% 
   mutate_at(.vars = vars(everything()),
@@ -97,8 +132,9 @@ data_grafico_empleo <- empleo %>%
 data_grafico_emae <- emae %>% 
   select(year, month, emae_hyr_ce) %>% 
   mutate(date= lubridate::ym(paste(year, month, "-")),
-         var_ia_emae_hyr=round(emae_hyr_ce/lag(emae_hyr_ce, n=12)-1,2)) %>% 
-  filter(year>=2018)
+         var_ia_emae_hyr=round(emae_hyr_ce/lag(emae_hyr_ce, n=12)-1,2),
+         var_19_emae_hyr=round(emae_hyr_ce/lag(emae_hyr_ce, n=48)-1,2))
+  #filter(year>=2018)
 
 data_grafico_conectividad_internacional  <-  conectividad_internacional %>% 
   rename(anio = anio_local, mes = mes_local,empresa = empresa_agrup_def) %>% 
@@ -124,5 +160,10 @@ data_grafico_conectividad_cabotaje  <-  conectividad_cabotaje %>%
          var_ia_pax_cab=round(pax/lag(pax, n=12)-1,3),
          pax_mill=round(pax/1000000,1))
   
- 
+ data_grafico_mundo <- tur_mundo %>%
+   mutate_at(.vars = vars(everything()),
+             .funs = ~ as.numeric(.)) %>% 
+   mutate(date= lubridate::ym(paste(anio, mes, "-")),
+          var_ia=round(tur_mundo/lag(tur_mundo, n=12)-1,2))
+   
   

@@ -1,61 +1,6 @@
-# valueBoxSpark <- function(value, subtitle, description, icon = NULL, color = "aqua", info = NULL, 
-#                           width = 4, href = NULL, spark = NULL, height_spark = 100,minititle = NULL) {
-#   
-#   spark <- plotly::ggplotly(spark +
-#                               theme_void(), height = height_spark) %>% 
-#     plotly::layout(paper_bgcolor='rgba(0,0,0,0)',
-#            plot_bgcolor='rgba(0,0,0,0)', 
-#            xaxis = list(
-#              type = "linear", 
-#              ticks = "", 
-#              anchor = "y", 
-#              mirror = FALSE, 
-#              showgrid = FALSE, 
-#              showline = FALSE, 
-#              zeroline = FALSE, 
-#              autorange = TRUE, 
-#              showticklabels = FALSE
-#            ), 
-#            yaxis = list(
-#              type = "linear", 
-#              ticks = "", 
-#              anchor = "x", 
-#              mirror = FALSE, 
-#              showgrid = FALSE, 
-#              showline = FALSE, 
-#              zeroline = FALSE, 
-#              autorange = TRUE, 
-#              showticklabels = FALSE
-#            )) %>% 
-#     plotly::config(displayModeBar = F)
-#   
-#   boxContent <- div(
-#     class = paste0("small-box bg-", color),
-#     div(
-#       class = "inner",
-#       if(!is.null(minititle)) tags$small(minititle, style = "color: black;"),
-#       h3(value),
-#       if (!is.null(description)) h4(description),
-#       # tags$span(style = paste0("height:", height_spark), hc_size(spark, height = "100vh")),
-#       tags$span(spark),
-#       if (!is.null(subtitle)) p(subtitle)
-#     ),
-#     if (!is.null(icon)) div(class = "icon-large", icon)
-#   )
-#   
-#   if (!is.null(href)) 
-#     boxContent <- a(href = href, boxContent)
-#   
-#   div(class = if (!is.null(width)) 
-#     paste0("col-sm-", width), boxContent)
-#   
-# }
-
-
-#este se armo el 1/11
 valueBoxSpark <- function(value, subtitle, description, minititle = NULL, 
                           icon = NULL, color = "aqua",
-                          idPlot, infoID) {
+                          idPlot, infoID, serieBtn) {
   
   #creo icono de info con id
   info_icon <- tags$small(
@@ -63,18 +8,34 @@ valueBoxSpark <- function(value, subtitle, description, minititle = NULL,
     class = "pull-right"
   )
   
+  serie_icon <- tags$small(
+    prettyToggle(
+      inputId = serieBtn,
+      label_on = "Ver serie completa", 
+      icon_on = icon("chart-line"),
+      status_on = "info",
+      status_off = "info", 
+      label_off = "Ver último mes",
+      icon_off = icon("chart-simple"),
+      fill = FALSE,
+      outline = FALSE,
+    )
+  )
+  
+  
   #creo caja con todos los elementos
   boxContent <- div(
     class = paste0("small-box bg-", color),
     div(
       class = "inner",
       if (!is.null(icon)) div(class = "icon-large", icon, style = "bottom: unset !important;"),
-      if(!is.null(minititle)) tags$small(minititle, style = "color: black;"),
+      if(!is.null(minititle)) h4(minititle),#tags$small(minititle, style = "color: white;"),
       h3(value),
-      if (!is.null(description)) h4(description),
+      if (!is.null(description)) h5(description),
       plotlyOutput(idPlot, width = "auto", height = 100),
+      serie_icon,
       info_icon,
-      p(subtitle)
+      h4(subtitle)
     )
   )
   

@@ -6,13 +6,28 @@ function(input, output) {
   #Creo y renderizo plotly a partir de ggplot
   output$grafico_ti_receptivo <- renderPlotly({ #idPlot
     
+    if (input$serie_ti_receptivo == F) {
+    
     #Armo ggplot y lo guardo en objeto
     grafico_ti_receptivo <- ggplot(data_grafico_ti)+
-      geom_line(aes(period, receptivo, group = 1,
+      geom_area(aes(period, receptivo), fill = "white", alpha = 0.3)+
+      geom_line(colour="white",alpha = 0.8,
+                aes(period, receptivo, group = 1,
                  text = paste('Fecha:', format(period,"%b%y"), #argumento para etiqueta interactiva
-                              '<br>Viajes de turistas receptivos:',lbl_int(receptivo))),
-                size = 1, alpha = .5) +
+                              '<br>Viajes de turistas receptivos:',lbl_int(receptivo)))) +
       theme_void()
+    
+    } else {
+      
+      #Armo ggplot y lo guardo en objeto
+      grafico_ti_receptivo <- data_grafico_ti %>%
+        filter(month == ultimo_ti) %>% 
+        ggplot(aes(period, receptivo, group = 1 )) +
+        geom_col(fill = "white", alpha = 0.6,
+                 aes(text = paste('Fecha:', format(period,"%b%y"), #argumento para etiqueta interactiva
+                                  '<br>Viajes de turistas receptivos:',lbl_int(receptivo)))) +
+        theme_void()
+    }
     
     #Paso ggplot a plotly y borro ejes (repetir para todos)
     ggplotly(grafico_ti_receptivo, 
@@ -32,11 +47,27 @@ function(input, output) {
   
   output$grafico_evyth <- renderPlotly({
     
+    if (input$serie_evyth == F) {
+    
     grafico_evyth <- ggplot(data_grafico_evyth)+
-      geom_col(aes(date, turistas,
+      geom_area(aes(date, turistas), fill = "white", alpha = 0.3)+
+      geom_line(colour="white",alpha= 0.8,
+               aes(date, turistas, group=1,
                    text = paste('Fecha:', fecha, #argumento para etiqueta interactiva
                                   '<br>Turistas internos:',format(turistas, decimal.mark = ",")))) +
       theme_void()
+    
+    } else {
+      
+      #Armo ggplot y lo guardo en objeto
+      grafico_evyth <- data_grafico_evyth %>%
+        filter(trimestre == ultimo_evyth) %>% 
+        ggplot(aes(date, turistas, group = 1 )) +
+        geom_col(fill = "white", alpha = 0.6,
+                 aes(text = paste('Fecha:', fecha, #argumento para etiqueta interactiva
+                                  '<br>Turistas internos:',format(turistas, decimal.mark = ",")))) +
+        theme_void()
+    }
     
     ggplotly(grafico_evyth, 
              tooltip = "text") %>% 
@@ -50,16 +81,30 @@ function(input, output) {
       config(displayModeBar = F)
   })
   
-##############EOH##############
+##############EOH VIAJEROS##############
   output$grafico_eoh_viajeros <- renderPlotly({
+    
+    if (input$serie_eoh_viajeros == F) {
     
     grafico_eoh_viajeros <- ggplot(data_grafico_eoh)+
       geom_area(aes(date, viajeros_tot), fill = "white", alpha = 0.3)+
-      geom_line(colour="white",alpha = 0.5, 
-                aes(date, viajeros_tot, group = 1,
+      geom_line(colour="white",alpha = 0.8,
+               aes(date, viajeros_tot, group = 1,
                    text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
                                 '<br>Viajeros hospedados:',format(viajeros_tot, decimal.mark = ",")))) +
       theme_void()
+    
+    } else {
+      
+      #Armo ggplot y lo guardo en objeto
+      grafico_eoh_viajeros <- data_grafico_eoh %>%
+        filter(month == ultimo_eoh) %>% 
+        ggplot(aes(date, viajeros_tot, group = 1 )) +
+        geom_col(fill = "white", alpha = 0.6,
+                 aes(text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
+                                  '<br>Viajeros hospedados:',format(viajeros_tot, decimal.mark = ",")))) +
+        theme_void()
+    }
     
     ggplotly(grafico_eoh_viajeros, 
              tooltip = "text") %>% 
@@ -73,33 +118,31 @@ function(input, output) {
       config(displayModeBar = F)
   })
   
-  output$grafico_eoh_pernoc <- renderPlotly({
-    
-    grafico_eoh_pernoc <- ggplot(data_grafico_eoh)+
-      geom_line(aes(date, pernoc_tot, group=1,
-                   text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
-                                '<br>Pernoctaciones:',format(pernoc_tot, decimal.mark = ",")))) +
-      theme_void()
-    
-    ggplotly(grafico_eoh_pernoc, 
-             tooltip = "text") %>% 
-      layout(
-        xaxis = list(visible = F, showgrid = F, title = ""),
-        yaxis = list(visible = F, showgrid = F, title = ""),
-        hovermode = "x",
-        paper_bgcolor = "transparent",
-        plot_bgcolor = "transparent"
-      ) %>%
-      config(displayModeBar = F)
-  })
+
 ###############EMPLEO###########################
   output$grafico_empleo_hyr <- renderPlotly({
     
+    if (input$serie_empleo == F) {
+    
     grafico_empleo_hyr <- ggplot(data_grafico_empleo)+
-      geom_line(aes(date, empleo_hyr_ce, group=1,
+      geom_area(aes(date, empleo_hyr_ce), fill = "white", alpha = 0.3)+
+      geom_line(colour="white",alpha = 0.8, 
+                aes(date, empleo_hyr_ce, group=1,
                     text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
                                  '<br>Trabajadores:',format(empleo_hyr_ce, decimal.mark = ",")))) +
       theme_void()
+    
+    } else {
+      
+      #Armo ggplot y lo guardo en objeto
+      grafico_empleo_hyr <- data_grafico_empleo %>%
+        filter(month == ultimo_empleo) %>% 
+        ggplot(aes(date, empleo_hyr_ce, group = 1 )) +
+        geom_col(fill = "white", alpha = 0.6,
+                 aes(text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
+                                  '<br>Trabajadores:',format(empleo_hyr_ce, decimal.mark = ",")))) +
+        theme_void()
+    }
     
     ggplotly(grafico_empleo_hyr, 
              tooltip = "text") %>% 
@@ -116,11 +159,27 @@ function(input, output) {
 ###############EMAE#############################
   output$grafico_emae_hyr <- renderPlotly({
     
+    if (input$serie_emae == F) {
+    
     grafico_emae_hyr <- ggplot(data_grafico_emae)+
-      geom_col(aes(date, var_ia_emae_hyr,
+      geom_area(aes(date, var_ia_emae_hyr), fill = "white", alpha = 0.3)+
+      geom_line(colour="white",alpha = 0.8, 
+                aes(date, var_ia_emae_hyr, group=1,
                     text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
-                                 '<br>Var i.a.:',format(lbl_percent(var_ia_emae_hyr), decimal.mark = ",")))) +
+                                 '<br>Var. i.a.:',format(lbl_percent(var_ia_emae_hyr), decimal.mark = ",")))) +
       theme_void()
+    
+    } else {
+      
+      #Armo ggplot y lo guardo en objeto
+      grafico_emae_hyr <- data_grafico_emae %>%
+        filter(month == ultimo_emae) %>% 
+        ggplot(aes(date,var_ia_emae_hyr, group = 1 )) +
+        geom_col(fill = "white", alpha = 0.6,
+                 aes(text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
+                                  '<br>Var. i.a.:',format(lbl_percent(var_ia_emae_hyr), decimal.mark = ",")))) +
+        theme_void()
+    }
     
     ggplotly(grafico_emae_hyr, 
              tooltip = "text") %>% 
@@ -134,14 +193,65 @@ function(input, output) {
       config(displayModeBar = F)
   })
   
+##############EOH PERNOCTES#################
+  output$grafico_eoh_pernoc <- renderPlotly({
+    
+    if (input$serie_eoh_pernoc == F) {
+    
+    grafico_eoh_pernoc <- ggplot(data_grafico_eoh)+
+      geom_area(aes(date, pernoc_tot), fill = "white", alpha = 0.3)+
+      geom_line(colour="white",alpha = 0.8, group=1,
+                aes(date, pernoc_tot, 
+                    text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
+                                 '<br>Pernoctaciones:',format(pernoc_tot, decimal.mark = ",")))) +
+      theme_void()
+    
+    } else {
+      
+      #Armo ggplot y lo guardo en objeto
+      grafico_eoh_pernoc <- data_grafico_eoh %>%
+        filter(month == ultimo_eoh) %>% 
+        ggplot(aes(date,pernoc_tot, group = 1 )) +
+        geom_col(fill = "white", alpha = 0.6,
+                 aes(text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
+                                  '<br>Pernoctaciones:',format(pernoc_tot, decimal.mark = ",")))) +
+        theme_void()
+    }
+    ggplotly(grafico_eoh_pernoc, 
+             tooltip = "text") %>% 
+      layout(
+        xaxis = list(visible = F, showgrid = F, title = ""),
+        yaxis = list(visible = F, showgrid = F, title = ""),
+        hovermode = "x",
+        paper_bgcolor = "transparent",
+        plot_bgcolor = "transparent"
+      ) %>%
+      config(displayModeBar = F)
+  })
 ###############CONECTIVIDAD INTERNACIONAL#############################
   output$grafico_conectividad_int <- renderPlotly({
     
+    if (input$serie_conectividad_int == F) {
+    
     grafico_conectividad_int <- ggplot(data_grafico_conectividad_internacional)+
-      geom_line(aes(date, pax, group=1,
+      geom_area(aes(date, pax), fill = "white", alpha = 0.3)+
+      geom_line(colour="white",alpha = 0.8,
+                aes(date, pax, group=1,
                    text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
                                 '<br>Pasajeros:',format(pax, decimal.mark = ",")))) +
       theme_void()
+    
+    } else {
+      
+      #Armo ggplot y lo guardo en objeto
+      grafico_conectividad_int <- data_grafico_conectividad_internacional %>%
+        filter(mes == ultimo_conectividad) %>% 
+        ggplot(aes(date, pax, group = 1 )) +
+        geom_col(fill = "white", alpha = 0.6,
+                 aes(text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
+                                  '<br>Pasajeros:',format(pax, decimal.mark = ",")))) +
+        theme_void()
+    }
     
     ggplotly(grafico_conectividad_int, 
              tooltip = "text") %>% 
@@ -158,11 +268,27 @@ function(input, output) {
 ###############CONECTIVIDAD CABOTAJE#############################
   output$grafico_conectividad_cab <- renderPlotly({
     
+    if (input$serie_conectividad_cab == F) {
+    
     grafico_conectividad_cab <- ggplot(data_grafico_conectividad_cabotaje)+
-      geom_line(aes(date, pax, group=1,
+      geom_area(aes(date, pax), fill = "white", alpha = 0.3)+
+      geom_line(colour="white",alpha = 0.8,
+                aes(date, pax, group=1,
                     text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
                                  '<br>Pasajeros:',format(pax, decimal.mark = ",")))) +
       theme_void()
+    
+    } else {
+      
+      #Armo ggplot y lo guardo en objeto
+      grafico_conectividad_cab <- data_grafico_conectividad_cabotaje %>%
+        filter(mes == ultimo_conectividad) %>% 
+        ggplot(aes(date,pax, group = 1 )) +
+        geom_col(fill = "white", alpha = 0.6,
+                 aes(text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
+                                  '<br>Pasajeros:',format(pax, decimal.mark = ",")))) +
+        theme_void()
+    }
     
     ggplotly(grafico_conectividad_cab, 
              tooltip = "text") %>% 
@@ -175,6 +301,43 @@ function(input, output) {
       ) %>%
       config(displayModeBar = F)
   })
+
+###############TURISMO MUNDO#############################
+  output$grafico_tur_mundo <- renderPlotly({
+    
+    if (input$serie_tur_mundo == F) {
+    
+    grafico_tur_mundo <- ggplot(data_grafico_mundo)+
+      geom_area(aes(date, tur_mundo), fill = "white", alpha = 0.3)+
+      geom_line(colour="white",alpha = 0.8,
+                aes(date, tur_mundo, group=1,
+                    text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
+                                 '<br>Turistas (mill):',format(tur_mundo, decimal.mark = ",")))) +
+      theme_void()
+    } else {
+      
+      #Armo ggplot y lo guardo en objeto
+      grafico_tur_mundo <- data_grafico_mundo %>%
+        filter(mes == ultimo_tur_mundo) %>% 
+        ggplot(aes(date,tur_mundo, group = 1 )) +
+        geom_col(fill = "white", alpha = 0.6,
+                 aes(text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
+                                  '<br>Turistas (mill):',format(tur_mundo, decimal.mark = ",")))) +
+        theme_void()
+    }
+    
+    ggplotly(grafico_tur_mundo, 
+             tooltip = "text") %>% 
+      layout(
+        xaxis = list(visible = F, showgrid = F, title = ""),
+        yaxis = list(visible = F, showgrid = F, title = ""),
+        hovermode = "x",
+        paper_bgcolor = "transparent",
+        plot_bgcolor = "transparent"
+      ) %>%
+      config(displayModeBar = F)
+  })
+  
 ###########CREO LOS VALUE BOX###################  
 ############TURISMO INTERNACIONAL###############  
     
@@ -208,12 +371,13 @@ function(input, output) {
     #uso función personalizada
     valueBoxSpark(
       value = lbl_int(ultimo_dato_ti), #indicador
-      subtitle = ifelse(var_ia_ti>0, paste0("+",var_ia_ti," var i.a"),paste0(var_ia_ti," var i.a")), #texto de abajo
-      description = "viajes de turistas receptivos", #texto debajo del indicador
-      minititle = paste0("Turismo internacional ", mes," ", anio), #texto de arriba
+      subtitle = ifelse(var_ia_ti>0, paste0("+",var_ia_ti," var. i.a."),paste0(var_ia_ti," var. i.a.")), #texto de abajo
+      description = paste0("viajes de turistas receptivos-",mes," ", anio), #texto debajo del indicador
+      minititle = "TURISMO INTERNACIONAL",  #texto de arriba
       icon = icon("plane-arrival"), #icono de fontawesome
       infoID = "tur_internacional", #id para icono de info
-      idPlot = "grafico_ti_receptivo", #id del renderPlotly
+      idPlot = "grafico_ti_receptivo",
+      serieBtn = "serie_ti_receptivo",#id del renderPlotly
       color = "aqua" #color
     )
     
@@ -242,12 +406,13 @@ function(input, output) {
     
     valueBoxSpark(
       value = paste0 (ultimo_dato_evyth, " millones"), #indicador
-      subtitle = ifelse(var_ia_evyth>0, paste0("+",lbl_percent(var_ia_evyth)," var i.a"),paste0(lbl_percent(var_ia_evyth)," var i.a")), #texto de abajo
-      description = "cantidad de turistas internos", #texto debajo del indicador
-      minititle = paste0("Turismo interno ", trim_evyth), #texto de arriba
+      subtitle = ifelse(var_ia_evyth>0, paste0("+",lbl_percent(var_ia_evyth)," var. i.a."),paste0(lbl_percent(var_ia_evyth)," var. i.a.")), #texto de abajo
+      description = paste0("cantidad de turistas internos-",trim_evyth), #texto debajo del indicador
+      minititle = "TURISMO INTERNO", #texto de arriba
       icon = icon("car"), #icono de fontawesome
       infoID = "tur_interno", #id para icono de info
       idPlot = "grafico_evyth", #id del renderPlotly
+      serieBtn = "serie_evyth",
       color = "green" #color
     )
     
@@ -281,58 +446,57 @@ function(input, output) {
     
     valueBoxSpark(
       value = paste0 (ultimo_dato_eoh_viajeros, " millones"), #indicador
-      subtitle = ifelse(var_ia_eoh_viajeros>0, paste0("+",lbl_percent(var_ia_eoh_viajeros)," var i.a"),paste0(lbl_percent(var_ia_eoh_viajeros)," var i.a")), #texto de abajo
-      description = "cantidad de viajeros hospedados", #texto debajo del indicador
-      minititle = paste0("Ocupación hotelera ", mes_eoh, " ", anio_eoh), #texto de arriba
+      subtitle = ifelse(var_ia_eoh_viajeros>0, paste0("+",lbl_percent(var_ia_eoh_viajeros)," var. i.a."),paste0(lbl_percent(var_ia_eoh_viajeros)," var. i.a.")), #texto de abajo
+      description =  paste0("cantidad de viajeros hospedados-",mes_eoh, " ", anio_eoh), #texto debajo del indicador
+      minititle ="OCUPACIÓN HOTELERA",  #texto de arriba
       icon = icon("hotel"), #icono de fontawesome
       infoID = "tur_eoh", #id para icono de info
       idPlot = "grafico_eoh_viajeros", #id del renderPlotly
+      serieBtn = "serie_eoh_viajeros",
       color = "light-blue" #color
     )
     
   })
   
-  
-############EOH PERNOCTACIONES############### 
-  
-  output$box_eoh_pernoctes <- renderValueBox({ #id a usar en la UI
+  ############EMAE###############
+  output$box_emae_hyr <- renderValueBox({ #id a usar en la UI
     
-    mes_eoh <- data_grafico_eoh %>% 
+    mes_emae <- data_grafico_emae %>% 
       tail(1) %>% 
       pull(date) %>% 
       months()
     
-    anio_eoh <- data_grafico_eoh %>% 
+    anio_emae <- data_grafico_emae %>% 
       tail(1) %>% 
       pull(date) %>% 
       year()
     
+    
     #calculo de ultimo dato y var i.a.
-    ultimo_dato_eoh_pernoctes <- data_grafico_eoh%>% 
+    var_ia_emae_hyr <- data_grafico_emae%>% 
       tail(1) %>% 
-      pull(pernoc_tot) %>% 
-      format(decimal.mark = ",")
+      pull(var_ia_emae_hyr)
     
-    
-    var_ia_eoh_pernoctes <- data_grafico_eoh%>% 
+    var_19_emae_hyr <- data_grafico_emae%>% 
       tail(1) %>% 
-      pull(var_ia_pernoc)
+      pull(var_19_emae_hyr)
     
     
     
     valueBoxSpark(
-      value = paste0 (ultimo_dato_eoh_pernoctes, " millones de noches"), #indicador
-      subtitle = ifelse(var_ia_eoh_pernoctes>0, paste0("+",lbl_percent(var_ia_eoh_pernoctes)," var i.a"),paste0(lbl_percent(var_ia_eoh_pernoctes)," var i.a")), #texto de abajo
-      description = "cantidad de pernoctaciones", #texto debajo del indicador
-      minititle = paste0("Ocupación hotelera ", mes_eoh, " ", anio_eoh), #texto de arriba
-      icon = icon("bed"), #icono de fontawesome
-      infoID = "tur_eoh_p", #id para icono de info
-      idPlot = "grafico_eoh_pernoc", #id del renderPlotly
-      color = "orange" #color
+      value = ifelse (var_ia_emae_hyr>0, paste0("+",lbl_percent(var_ia_emae_hyr)," var. i.a."),paste0(lbl_percent(var_ia_emae_hyr)," var. i.a.")), #indicador
+      subtitle = ifelse(var_19_emae_hyr>0, paste0("+",lbl_percent(var_19_emae_hyr)," var. vs 2019"),paste0(lbl_percent(var_19_emae_hyr)," var. vs 2019")), #texto de abajo
+      description = paste0("act. económica en “Hoteles y Restaurantes”-", mes_emae, " ", anio_emae), #texto debajo del indicador
+      minititle = "ESTIMADOR MENSUAL DE ACT. ECONÓMICA", #texto de arriba
+      icon = icon("coins"), #icono de fontawesome
+      infoID = "emae_hyr", #id para icono de info
+      idPlot = "grafico_emae_hyr", #id del renderPlotly
+      serieBtn = "serie_emae",
+      color = "yellow" #color
     )
     
   })
-  
+
 ############EMPLEO###############  
   output$box_empleo_hyr <- renderValueBox({ #id a usar en la UI
     
@@ -363,90 +527,58 @@ function(input, output) {
     
     valueBoxSpark(
       value = paste0 (ultimo_dato_empleo_hyr_ce, " mil"), #indicador
-      subtitle = ifelse(var_m_empleo_hyr>0, paste0("+",lbl_percent(var_m_empleo_hyr)," var mensual"),paste0(lbl_percent(var_m_empleo_hyr)," var mensual")), #texto de abajo
-      description = "trabajadores en el sector “Hoteles y Restaurantes”", #texto debajo del indicador
-      minititle = paste0("Empleo privado registrado ", mes_empleo, " ", anio_empleo), #texto de arriba
+      subtitle = ifelse(var_m_empleo_hyr>0, paste0("+",lbl_percent(var_m_empleo_hyr)," var. mensual"),paste0(lbl_percent(var_m_empleo_hyr)," var. mensual")), #texto de abajo
+      description = paste0("trabajadores en “Hoteles y Restaurantes”-", mes_empleo, " ", anio_empleo), #texto debajo del indicador
+      minititle = "EMPLEO PRIVADO REGISTRADO", #texto de arriba
       icon = icon("briefcase"), #icono de fontawesome
       infoID = "empleo_hyr", #id para icono de info
       idPlot = "grafico_empleo_hyr", #id del renderPlotly
+      serieBtn = "serie_empleo",
       color = "red" #color
     )
     
   })
+  ############EOH PERNOCTACIONES############### 
   
-  output$box_empleo_hyr <- renderValueBox({ #id a usar en la UI
+  output$box_eoh_pernoctes <- renderValueBox({ #id a usar en la UI
     
-    mes_empleo <- data_grafico_empleo %>% 
+    mes_eoh <- data_grafico_eoh %>% 
       tail(1) %>% 
       pull(date) %>% 
       months()
     
-    anio_empleo <- data_grafico_empleo %>% 
+    anio_eoh <- data_grafico_eoh %>% 
       tail(1) %>% 
       pull(date) %>% 
       year()
     
-    
     #calculo de ultimo dato y var i.a.
-    ultimo_dato_empleo_hyr_ce <- data_grafico_empleo%>% 
+    ultimo_dato_eoh_pernoctes <- data_grafico_eoh%>% 
       tail(1) %>% 
-      pull(empleo_hyr_ce) %>% 
-      round(1) %>% 
-      format(decimal.mark=",")
+      pull(pernoc_tot) %>% 
+      format(decimal.mark = ",")
     
     
-    var_m_empleo_hyr <- data_grafico_empleo%>% 
+    var_ia_eoh_pernoctes <- data_grafico_eoh%>% 
       tail(1) %>% 
-      pull(var_mensual)
+      pull(var_ia_pernoc)
     
     
     
     valueBoxSpark(
-      value = paste0 (ultimo_dato_empleo_hyr_ce, " mil"), #indicador
-      subtitle = ifelse(var_m_empleo_hyr>0, paste0("+",lbl_percent(var_m_empleo_hyr)," var mensual"),paste0(lbl_percent(var_m_empleo_hyr)," var mensual")), #texto de abajo
-      description = "trabajadores en el sector “Hoteles y Restaurantes”", #texto debajo del indicador
-      minititle = paste0("Empleo privado registrado ", mes_empleo, " ", anio_empleo), #texto de arriba
-      icon = icon("briefcase"), #icono de fontawesome
-      infoID = "empleo_hyr", #id para icono de info
-      idPlot = "grafico_empleo_hyr", #id del renderPlotly
-      color = "red" #color
+      value = paste0 (ultimo_dato_eoh_pernoctes, " millones"), #indicador
+      subtitle = ifelse(var_ia_eoh_pernoctes>0, paste0("+",lbl_percent(var_ia_eoh_pernoctes)," var. i.a."),paste0(lbl_percent(var_ia_eoh_pernoctes)," var. i.a.")), #texto de abajo
+      description = paste0("cantidad de pernoctaciones-",mes_eoh, " ", anio_eoh), #texto debajo del indicador
+      minititle ="OCUPACIÓN HOTELERA", #texto de arriba
+      icon = icon("bed"), #icono de fontawesome
+      infoID = "tur_eoh_p", #id para icono de info
+      idPlot = "grafico_eoh_pernoc", #id del renderPlotly
+      serieBtn = "serie_eoh_pernoc",
+      color = "orange" #color
     )
     
   })
-############EMAE###############
-  output$box_emae_hyr <- renderValueBox({ #id a usar en la UI
-    
-    mes_emae <- data_grafico_emae %>% 
-      tail(1) %>% 
-      pull(date) %>% 
-      months()
-    
-    anio_emae <- data_grafico_emae %>% 
-      tail(1) %>% 
-      pull(date) %>% 
-      year()
-    
-    
-    #calculo de ultimo dato y var i.a.
-    var_ia_emae_hyr <- data_grafico_emae%>% 
-      tail(1) %>% 
-      pull(var_ia_emae_hyr)
-    
-    
-    
-    valueBoxSpark(
-      value = ifelse (var_ia_emae_hyr>0, paste0("+",lbl_percent(var_ia_emae_hyr)," var i.a."),paste0(lbl_percent(var_ia_emae_hyr)," var i.a.")), #indicador
-      subtitle =  "NULL",
-      description = "actividad económica en “Hoteles y Restaurantes”", #texto debajo del indicador
-      minititle = paste0("Estimador mensual de actividad económica (EMAE) ", mes_emae, " ", anio_emae), #texto de arriba
-      icon = icon("coins"), #icono de fontawesome
-      infoID = "emae_hyr", #id para icono de info
-      idPlot = "grafico_emae_hyr", #id del renderPlotly
-      color = "yellow" #color
-    )
-    
-  })
-  
+
 ###############CONECTIVIDAD INTERNACIONAL#####################
   output$box_conectividad_int <- renderValueBox({ #id a usar en la UI
     
@@ -475,18 +607,19 @@ function(input, output) {
     
     valueBoxSpark(
       value = paste0 (ultimo_dato_pax_int, " mil"), #indicador
-      subtitle =  ifelse(var_ia_conectividad_int>0, paste0("+",lbl_percent(var_ia_conectividad_int)," var i.a."),paste0(lbl_percent(var_ia_conectividad_int)," var i.a.")), #texto de abajo
-      description = "pasajeros transportados en vuelos internacionales", #texto debajo del indicador
-      minititle = paste0("Conectividad aérea internacional ", mes_conectividad, " ", anio_conectividad), #texto de arriba
+      subtitle =  ifelse(var_ia_conectividad_int>0, paste0("+",lbl_percent(var_ia_conectividad_int)," var. i.a."),paste0(lbl_percent(var_ia_conectividad_int)," var. i.a.")), #texto de abajo
+      description = paste0("pasajeros en vuelos internacionales-", mes_conectividad, " ", anio_conectividad), #texto debajo del indicador
+      minititle = "CONECTIVIDAD AÉREA INTERNACIONAL", #texto de arriba
       icon = icon("plane-up"), #icono de fontawesome
       infoID = "conectividad_i", #id para icono de info
       idPlot = "grafico_conectividad_int", #id del renderPlotly
+      serieBtn = "serie_conectividad_int",#id del renderPlotly
       color = "purple" #color
     )
     
   })
   
-###############CONECTIVIDAD CABOTAJE#####################
+  ###############CONECTIVIDAD CABOTAJE#####################
   output$box_conectividad_cab <- renderValueBox({ #id a usar en la UI
     
     mes_conectividad <- data_grafico_conectividad_cabotaje %>% 
@@ -514,12 +647,13 @@ function(input, output) {
     
     valueBoxSpark(
       value = paste0 (ultimo_dato_pax_cab, " millones"), #indicador
-      subtitle =  ifelse(var_ia_conectividad_cab>0, paste0("+",lbl_percent(var_ia_conectividad_cab)," var i.a."),paste0(lbl_percent(var_ia_conectividad_cab)," var i.a.")), #texto de abajo
-      description = "pasajeros transportados en vuelos de cabotaje", #texto debajo del indicador
-      minititle = paste0("Conectividad aérea de cabotaje ", mes_conectividad, " ", anio_conectividad), #texto de arriba
+      subtitle =  ifelse(var_ia_conectividad_cab>0, paste0("+",lbl_percent(var_ia_conectividad_cab)," var. i.a."),paste0(lbl_percent(var_ia_conectividad_cab)," var. i.a.")), #texto de abajo
+      description = paste0("pasajeros en vuelos de cabotaje-", mes_conectividad, " ", anio_conectividad), #texto debajo del indicador
+      minititle = "CONECTIVIDAD AÉREA DE CABOTAJE", #texto de arriba
       icon = icon("plane-up"), #icono de fontawesome
       infoID = "conectividad_c", #id para icono de info
       idPlot = "grafico_conectividad_cab", #id del renderPlotly
+      serieBtn = "serie_conectividad_cab",
       color = "fuchsia" #color
     )
     
@@ -528,29 +662,39 @@ function(input, output) {
 ###############TURISMO EN EL MUNDO#####################
   output$box_tur_mundo <- renderValueBox({ #id a usar en la UI
     
+    mes_mundo <- data_grafico_mundo %>% 
+      tail(1) %>% 
+      pull(date) %>% 
+      months()
+    
+    anio_mundo <- data_grafico_mundo %>% 
+      tail(1) %>% 
+      pull(date) %>% 
+      year()
+    
+    
     #calculo de ultimo dato y var i.a.
-    var_23 <- tur_mundo%>% 
-      filter(row_number() !=n()) %>% 
-      pull(mund) %>% 
+    ultimo_dato_mundo <- data_grafico_mundo%>% 
+      tail(1) %>%
+      pull(tur_mundo) %>% 
       as.numeric() %>% 
       format(decimal.mark=",")
     
-    var_19 <- tur_mundo %>% 
+    var_ia_mundo <- data_grafico_mundo %>% 
       tail(1) %>% 
-      pull(mund) %>% 
-      as.numeric() %>% 
-      format(decimal.mark=",")
+      pull(var_ia)
     
     
     
     valueBoxSpark(
-      value = paste0(var_23, " var i.a."), #indicador
-      subtitle =  paste0(var_19, "% var vs 2019"), #texto de abajo
-      description = "llegadas de turistas internacionales", #texto debajo del indicador
-      minititle = "Turismo en el mundo 2° trim 2023", #texto de arriba
+      value = paste0(ultimo_dato_mundo, " millones"), #indicador
+      subtitle =   ifelse(var_ia_mundo>0, paste0("+",lbl_percent(var_ia_mundo)," var. i.a."),paste0(lbl_percent(var_ia_mundo)," var. i.a.")), #texto de abajo
+      description = paste0("llegadas de turistas internacionales al mundo-",mes_mundo," ", anio_mundo), #texto debajo del indicador
+      minititle = "TURISMO EN EL MUNDO",#texto de arriba
       icon = icon("earth-americas"), #icono de fontawesome
       infoID = "tur_mundo", #id para icono de info
-      idPlot = "", #id del renderPlotly
+      idPlot = "grafico_tur_mundo", #id del renderPlotly
+      serieBtn = "serie_tur_mundo",
       color = "lime" #color
     )
     
@@ -563,7 +707,9 @@ function(input, output) {
     sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
                    title = "Turismo internacional", #titulo del popup
                    text = HTML(paste("Para más información visitá el",tags$a( href="https://tableros.yvera.tur.ar/turismo_internacional",
-                                                                              "Tablero interactivo"))),  #texto descriptivo, se pueden poner etiquetas html
+                                                                              "tablero interactivo",target = '_blank'), "o los", tags$a( href="https://www.yvera.tur.ar/sinta/informe/info/turismo-internacional",
+                                                                                                                       "informes técnicos.",target = '_blank'), "También podés descargar los", tags$a( href="https://datos.yvera.gob.ar/dataset?groups=turismo-internacional",
+                                                                                                                                                                                     "datos abiertos.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
                    btn_labels = NA,
                    html = TRUE#no mostrar botones que vienen por default
     )
@@ -573,8 +719,10 @@ function(input, output) {
     
     sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
                    title = "Turismo interno", #titulo del popup
-                   text = HTML(paste("Para más información visitá los",tags$a( href="https://www.yvera.tur.ar/sinta/informe/info/encuesta-de-viajes-y-turismo-de-los-hogares-evyth",
-                                                                              "Informes técnicos"))),  #texto descriptivo, se pueden poner etiquetas html
+                   text = HTML(paste("Para más información visitá el",tags$a( href="https://tableros.yvera.tur.ar/interno.html",
+                                                                              "reporte de los últimos datos",target = '_blank'), "o los",tags$a( href="https://www.yvera.tur.ar/sinta/informe/info/encuesta-de-viajes-y-turismo-de-los-hogares-evyth",
+                                                                                                                                    "informes técnicos.",target = '_blank'),"También podés descargar los", tags$a( href="https://datos.yvera.gob.ar/dataset?groups=turismo-interno",
+                                                                                                                                                                                                 "datos abiertos.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
                    btn_labels = NA,
                    html = TRUE#no mostrar botones que vienen por default
     )
@@ -585,29 +733,9 @@ function(input, output) {
     sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
                    title = "Ocupación hotelera", #titulo del popup
                    text = HTML(paste("Para más información visitá el",tags$a( href="https://tableros.yvera.tur.ar/eoh.html",
-                                                                               "Tablero"))),  #texto descriptivo, se pueden poner etiquetas html
-                   btn_labels = NA,
-                   html = TRUE#no mostrar botones que vienen por default
-    )
-  })
-  
-  observeEvent(input$tur_eoh_p,{ #infoID que se puso en la función de arriba 
-    
-    sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
-                   title = "Ocupación hotelera", #titulo del popup
-                   text = HTML(paste("Para más información visitá el",tags$a( href="https://tableros.yvera.tur.ar/eoh.html",
-                                                                              "Tablero"))),  #texto descriptivo, se pueden poner etiquetas html
-                   btn_labels = NA,
-                   html = TRUE#no mostrar botones que vienen por default
-    )
-  })
-  
-  observeEvent(input$empleo_hyr,{ #infoID que se puso en la función de arriba 
-    
-    sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
-                   title = "Empleo privado registrado", #titulo del popup
-                   text = HTML(paste("Para más información visitá el",tags$a( href="https://biblioteca.yvera.tur.ar/coyuntura.html",
-                                                                              "Informe mensual de estadísticas de turismo"))),  #texto descriptivo, se pueden poner etiquetas html
+                                                                              "reporte de los últimos datos",target = '_blank'),"o los",tags$a(href="https://www.yvera.tur.ar/sinta/informe/info/encuesta-de-ocupacion-hotelera-eoh",
+                                                                                                                             "informes técnicos.",target = '_blank'), "también podés descargar los", tags$a(href="https://datos.yvera.gob.ar/dataset?groups=sector-hotelero",
+                                                                                                                                                                                          "datos abiertos.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
                    btn_labels = NA,
                    html = TRUE#no mostrar botones que vienen por default
     )
@@ -618,51 +746,65 @@ function(input, output) {
     sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
                    title = "Estimador mensual de actividad económica (EMAE)", #titulo del popup
                    text = HTML(paste("Para más información visitá el",tags$a( href="https://biblioteca.yvera.tur.ar/coyuntura.html",
-                                                                              "Informe mensual de estadísticas de turismo"))),  #texto descriptivo, se pueden poner etiquetas html
+                                                                              "Informe mensual de estadísticas de turismo.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
                    btn_labels = NA,
                    html = TRUE#no mostrar botones que vienen por default
     )
   })
+
+  observeEvent(input$empleo_hyr,{ #infoID que se puso en la función de arriba 
   
-  observeEvent(input$tur_omt,{ #infoID que se puso en la función de arriba 
+  sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
+                 title = "Empleo privado registrado", #titulo del popup
+                 text = HTML(paste("Para más información visitá el",tags$a( href="https://biblioteca.yvera.tur.ar/coyuntura.html",
+                                                                            "Informe mensual de estadísticas de turismo.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
+                 btn_labels = NA,
+                 html = TRUE#no mostrar botones que vienen por default
+  )
+})
+  observeEvent(input$tur_eoh_p,{ #infoID que se puso en la función de arriba 
     
     sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
-                   title = "Turismo en el mundo", #titulo del popup
-                   text = HTML(paste("Para más información visitá el",tags$a( href="https://biblioteca.yvera.tur.ar/coyuntura.html",
-                                                                              "Informe mensual de estadísticas de turismo"))),  #texto descriptivo, se pueden poner etiquetas html
+                   title = "Ocupación hotelera", #titulo del popup
+                   text = HTML(paste("Para más información visitá el",tags$a( href="https://tableros.yvera.tur.ar/eoh.html",
+                                                                              "reporte de los últimos datos",target = '_blank'),"o los",tags$a(href="https://www.yvera.tur.ar/sinta/informe/info/encuesta-de-ocupacion-hotelera-eoh",
+                                                                                                                             "informes técnicos.",target = '_blank'), "también podés descargar los", tags$a(href="https://datos.yvera.gob.ar/dataset?groups=sector-hotelero",
+                                                                                                                                                                                           "datos abiertos.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
                    btn_labels = NA,
                    html = TRUE#no mostrar botones que vienen por default
     )
   })
+
+  observeEvent(input$conectividad_i,{ #infoID que se puso en la función de arriba 
+  
+  sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
+                 title = "Conectividad", #titulo del popup
+                 text = HTML(paste("Para más información visitá el",tags$a( href="https://tableros.yvera.tur.ar/conectividad/",
+                                                                            "tablero interactivo.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
+                 btn_labels = NA,
+                 html = TRUE#no mostrar botones que vienen por default
+  )
+})
   
   observeEvent(input$conectividad_c,{ #infoID que se puso en la función de arriba 
     
     sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
                    title = "Conectividad", #titulo del popup
                    text = HTML(paste("Para más información visitá el",tags$a( href="https://tableros.yvera.tur.ar/conectividad/",
-                                                                              "Tablero interactivo"))),  #texto descriptivo, se pueden poner etiquetas html
+                                                                              "tablero interactivo.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
                    btn_labels = NA,
                    html = TRUE#no mostrar botones que vienen por default
     )
   })
   
-  observeEvent(input$conectividad_i,{ #infoID que se puso en la función de arriba 
-    
-    sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
-                   title = "Conectividad", #titulo del popup
-                   text = HTML(paste("Para más información visitá el",tags$a( href="https://tableros.yvera.tur.ar/conectividad/",
-                                                                              "Tablero interactivo"))),  #texto descriptivo, se pueden poner etiquetas html
-                   btn_labels = NA,
-                   html = TRUE#no mostrar botones que vienen por default
-    )
-  })
+  
   
   observeEvent(input$tur_mundo,{ #infoID que se puso en la función de arriba 
     
     sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
                    title = "Turismo en el mundo", #titulo del popup
                    text = HTML(paste("Para más información visitá el",tags$a( href="https://biblioteca.yvera.tur.ar/coyuntura.html",
-                                                                              "Informe mensual de estadísticas de turismo"))),  #texto descriptivo, se pueden poner etiquetas html
+                                                                              "Informe mensual de estadísticas de turismo.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
                    btn_labels = NA,
                    html = TRUE#no mostrar botones que vienen por default
     )
