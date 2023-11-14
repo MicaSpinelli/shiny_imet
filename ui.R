@@ -8,7 +8,7 @@
 #
 
 dashboardPage(
-    dashboardHeader(title = div(icon('chart-line'),"ÚLTIMOS DATOS DEL TURISMO"), titleWidth = 500,
+    dashboardHeader(title = div(icon('chart-line'),"ULTIMOS DATOS DEL TURISMO EN ARGENTINA"), titleWidth = 600,
                     tags$li(a(
                          href = 'https://www.yvera.tur.ar/sinta/',
                          img(src = 'https://tableros.yvera.tur.ar/recursos/logo_sinta.png',

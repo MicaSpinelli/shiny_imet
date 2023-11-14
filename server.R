@@ -54,7 +54,7 @@ function(input, output) {
       geom_line(colour="white",alpha= 0.8,
                aes(date, turistas, group=1,
                    text = paste('Fecha:', fecha, #argumento para etiqueta interactiva
-                                  '<br>Turistas internos:',format(turistas, decimal.mark = ",")))) +
+                                  '<br>Turistas internos:',format(turistas, decimal.mark = ","),"M"))) +
       theme_void()
     
     } else {
@@ -65,7 +65,7 @@ function(input, output) {
         ggplot(aes(date, turistas, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
                  aes(text = paste('Fecha:', fecha, #argumento para etiqueta interactiva
-                                  '<br>Turistas internos:',format(turistas, decimal.mark = ",")))) +
+                                  '<br>Turistas internos:',format(turistas, decimal.mark = ","),"M"))) +
         theme_void()
     }
     
@@ -91,7 +91,7 @@ function(input, output) {
       geom_line(colour="white",alpha = 0.8,
                aes(date, viajeros_tot, group = 1,
                    text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
-                                '<br>Viajeros hospedados:',format(viajeros_tot, decimal.mark = ",")))) +
+                                '<br>Viajeros hospedados:',format(viajeros_tot, decimal.mark = ","),"M"))) +
       theme_void()
     
     } else {
@@ -102,7 +102,7 @@ function(input, output) {
         ggplot(aes(date, viajeros_tot, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
                  aes(text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
-                                  '<br>Viajeros hospedados:',format(viajeros_tot, decimal.mark = ",")))) +
+                                  '<br>Viajeros hospedados:',format(viajeros_tot, decimal.mark = ","),"M"))) +
         theme_void()
     }
     
@@ -125,10 +125,10 @@ function(input, output) {
     if (input$serie_empleo == F) {
     
     grafico_empleo_hyr <- ggplot(data_grafico_empleo)+
-      geom_area(aes(date, empleo_hyr_ce), fill = "white", alpha = 0.3)+
+      geom_area(aes(fecha, empleo_hyr_ce), fill = "white", alpha = 0.3)+
       geom_line(colour="white",alpha = 0.8, 
-                aes(date, empleo_hyr_ce, group=1,
-                    text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
+                aes(fecha, empleo_hyr_ce, group=1,
+                    text = paste('Fecha:', format(fecha,"%b%y"), #argumento para etiqueta interactiva
                                  '<br>Trabajadores:',format(empleo_hyr_ce, decimal.mark = ",")))) +
       theme_void()
     
@@ -137,9 +137,9 @@ function(input, output) {
       #Armo ggplot y lo guardo en objeto
       grafico_empleo_hyr <- data_grafico_empleo %>%
         filter(month == ultimo_empleo) %>% 
-        ggplot(aes(date, empleo_hyr_ce, group = 1 )) +
+        ggplot(aes(fecha, empleo_hyr_ce, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
-                 aes(text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
+                 aes(text = paste('Fecha:', format(fecha,"%b%y"), #argumento para etiqueta interactiva
                                   '<br>Trabajadores:',format(empleo_hyr_ce, decimal.mark = ",")))) +
         theme_void()
     }
@@ -203,7 +203,7 @@ function(input, output) {
       geom_line(colour="white",alpha = 0.8, group=1,
                 aes(date, pernoc_tot, 
                     text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
-                                 '<br>Pernoctaciones:',format(pernoc_tot, decimal.mark = ",")))) +
+                                 '<br>Pernoctaciones:',format(pernoc_tot, decimal.mark = ","),"M"))) +
       theme_void()
     
     } else {
@@ -214,7 +214,7 @@ function(input, output) {
         ggplot(aes(date,pernoc_tot, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
                  aes(text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
-                                  '<br>Pernoctaciones:',format(pernoc_tot, decimal.mark = ",")))) +
+                                  '<br>Pernoctaciones:',format(pernoc_tot, decimal.mark = ","),"M"))) +
         theme_void()
     }
     ggplotly(grafico_eoh_pernoc, 
@@ -238,7 +238,7 @@ function(input, output) {
       geom_line(colour="white",alpha = 0.8,
                 aes(date, pax, group=1,
                    text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
-                                '<br>Pasajeros:',format(pax, decimal.mark = ",")))) +
+                                '<br>Pasajeros:',format(pax_miles, decimal.mark = ","),"mil"))) +
       theme_void()
     
     } else {
@@ -249,7 +249,7 @@ function(input, output) {
         ggplot(aes(date, pax, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
                  aes(text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
-                                  '<br>Pasajeros:',format(pax, decimal.mark = ",")))) +
+                                  '<br>Pasajeros:',format(pax_miles, decimal.mark = ","),"mil"))) +
         theme_void()
     }
     
@@ -275,7 +275,7 @@ function(input, output) {
       geom_line(colour="white",alpha = 0.8,
                 aes(date, pax, group=1,
                     text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
-                                 '<br>Pasajeros:',format(pax, decimal.mark = ",")))) +
+                                 '<br>Pasajeros:',format(pax_mill, decimal.mark = ","),"M"))) +
       theme_void()
     
     } else {
@@ -286,7 +286,7 @@ function(input, output) {
         ggplot(aes(date,pax, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
                  aes(text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
-                                  '<br>Pasajeros:',format(pax, decimal.mark = ",")))) +
+                                  '<br>Pasajeros:',format(pax_mill, decimal.mark = ","),"M"))) +
         theme_void()
     }
     
@@ -312,7 +312,7 @@ function(input, output) {
       geom_line(colour="white",alpha = 0.8,
                 aes(date, tur_mundo, group=1,
                     text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
-                                 '<br>Turistas (mill):',format(tur_mundo, decimal.mark = ",")))) +
+                                 '<br>Turistas:',format(tur_mundo, decimal.mark = ","),"M"))) +
       theme_void()
     } else {
       
@@ -322,7 +322,7 @@ function(input, output) {
         ggplot(aes(date,tur_mundo, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
                  aes(text = paste('Fecha:', format(date,"%b%y"), #argumento para etiqueta interactiva
-                                  '<br>Turistas (mill):',format(tur_mundo, decimal.mark = ",")))) +
+                                  '<br>Turistas:',format(tur_mundo, decimal.mark = ","),"M"))) +
         theme_void()
     }
     
@@ -413,7 +413,7 @@ function(input, output) {
       infoID = "tur_interno", #id para icono de info
       idPlot = "grafico_evyth", #id del renderPlotly
       serieBtn = "serie_evyth",
-      color = "green" #color
+      color = "teal" #color
     )
     
   })
@@ -453,7 +453,7 @@ function(input, output) {
       infoID = "tur_eoh", #id para icono de info
       idPlot = "grafico_eoh_viajeros", #id del renderPlotly
       serieBtn = "serie_eoh_viajeros",
-      color = "light-blue" #color
+      color = "olive" #color
     )
     
   })
@@ -492,7 +492,7 @@ function(input, output) {
       infoID = "emae_hyr", #id para icono de info
       idPlot = "grafico_emae_hyr", #id del renderPlotly
       serieBtn = "serie_emae",
-      color = "yellow" #color
+      color = "orange" #color
     )
     
   })
@@ -502,31 +502,29 @@ function(input, output) {
     
     mes_empleo <- data_grafico_empleo %>% 
       tail(1) %>% 
-      pull(date) %>% 
+      pull(fecha) %>% 
       months()
     
     anio_empleo <- data_grafico_empleo %>% 
       tail(1) %>% 
-      pull(date) %>% 
+      pull(fecha) %>% 
       year()
     
     
     #calculo de ultimo dato y var i.a.
     ultimo_dato_empleo_hyr_ce <- data_grafico_empleo%>% 
       tail(1) %>% 
-      pull(empleo_hyr_ce) %>% 
-      round(1) %>% 
-      format(decimal.mark=",")
+      pull(empleo_hyr_ce) 
     
     
     var_m_empleo_hyr <- data_grafico_empleo%>% 
       tail(1) %>% 
-      pull(var_mensual)
+      pull(var_mensual) 
     
     
     
     valueBoxSpark(
-      value = paste0 (ultimo_dato_empleo_hyr_ce, " mil"), #indicador
+      value = paste0 (ultimo_dato_empleo_hyr_ce), #indicador
       subtitle = ifelse(var_m_empleo_hyr>0, paste0("+",lbl_percent(var_m_empleo_hyr)," var. mensual"),paste0(lbl_percent(var_m_empleo_hyr)," var. mensual")), #texto de abajo
       description = paste0("trabajadores en “Hoteles y Restaurantes”-", mes_empleo, " ", anio_empleo), #texto debajo del indicador
       minititle = "EMPLEO PRIVADO REGISTRADO", #texto de arriba
@@ -534,7 +532,7 @@ function(input, output) {
       infoID = "empleo_hyr", #id para icono de info
       idPlot = "grafico_empleo_hyr", #id del renderPlotly
       serieBtn = "serie_empleo",
-      color = "red" #color
+      color = "yellow" #color
     )
     
   })
@@ -574,7 +572,7 @@ function(input, output) {
       infoID = "tur_eoh_p", #id para icono de info
       idPlot = "grafico_eoh_pernoc", #id del renderPlotly
       serieBtn = "serie_eoh_pernoc",
-      color = "orange" #color
+      color = "green" #color
     )
     
   })
@@ -614,7 +612,7 @@ function(input, output) {
       infoID = "conectividad_i", #id para icono de info
       idPlot = "grafico_conectividad_int", #id del renderPlotly
       serieBtn = "serie_conectividad_int",#id del renderPlotly
-      color = "purple" #color
+      color = "fuchsia" #color
     )
     
   })
@@ -654,7 +652,7 @@ function(input, output) {
       infoID = "conectividad_c", #id para icono de info
       idPlot = "grafico_conectividad_cab", #id del renderPlotly
       serieBtn = "serie_conectividad_cab",
-      color = "fuchsia" #color
+      color = "red" #color
     )
     
   })
@@ -695,7 +693,7 @@ function(input, output) {
       infoID = "tur_mundo", #id para icono de info
       idPlot = "grafico_tur_mundo", #id del renderPlotly
       serieBtn = "serie_tur_mundo",
-      color = "lime" #color
+      color = "maroon" #color
     )
     
   })
@@ -778,7 +776,7 @@ function(input, output) {
   observeEvent(input$conectividad_i,{ #infoID que se puso en la función de arriba 
   
   sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
-                 title = "Conectividad", #titulo del popup
+                 title = "Conectividad aérea", #titulo del popup
                  text = HTML(paste("Para más información visitá el",tags$a( href="https://tableros.yvera.tur.ar/conectividad/",
                                                                             "tablero interactivo.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
                  btn_labels = NA,
@@ -789,7 +787,7 @@ function(input, output) {
   observeEvent(input$conectividad_c,{ #infoID que se puso en la función de arriba 
     
     sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
-                   title = "Conectividad", #titulo del popup
+                   title = "Conectividad aérea", #titulo del popup
                    text = HTML(paste("Para más información visitá el",tags$a( href="https://tableros.yvera.tur.ar/conectividad/",
                                                                               "tablero interactivo.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
                    btn_labels = NA,

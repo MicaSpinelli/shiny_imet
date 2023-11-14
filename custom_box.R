@@ -16,9 +16,7 @@ valueBoxSpark <- function(value, subtitle, description, minititle = NULL,
       status_on = "info",
       status_off = "info", 
       label_off = "Ver último mes",
-      icon_off = icon("chart-simple"),
-      fill = FALSE,
-      outline = FALSE,
+      icon_off = icon("chart-simple")
     )
   )
   

@@ -18,7 +18,8 @@ library(comunicacion)
 library(plotly) #para graficos interactivos
 library(shinyWidgets) #para los popup
 
-
+#seteo lenguaje en español
+Sys.setlocale(locale = "es_AR.UTF-8")
 
 googlesheets4::gs4_deauth()
 
@@ -36,12 +37,13 @@ eoh <- read_file_srv("/srv/DataDNMYE/imet/eoh_imet.csv") %>%
   mutate(year= as.numeric(str_sub(indice_tiempo, end = 4L)),
          month= as.numeric(str_sub(indice_tiempo, start = 6L, end = 7L)))
 
-emae <- data_serie_emae <- read_file_srv("/srv/DataDNMYE/economia2/emae_imet.csv") 
+emae <- read_file_srv("/srv/DataDNMYE/economia2/emae_imet.csv") 
 
-empleo <- read_sheet("https://docs.google.com/spreadsheets/d/1ff3v_hxPxhu5kovPJYKnubifIvswD1-nQzdcqWFj3I4/edit#gid=0")
+
+empleo <- read_file_srv("/srv/DataDNMYE/economia2/empleo_imet.csv") %>% 
+  filter(sector=="hoteles_y_restaurantes") 
   
-tur_mundo <- read_sheet("https://docs.google.com/spreadsheets/d/1O-RQY8m1_kSmJxpAZEv19Lcfe1oRcq_Ltur3lgH1Mf4/edit#gid=481565092",
-                        sheet = 2)
+tur_mundo <-  read_file_srv("/srv/DataDNMYE/economia2/tur_mundo_omt.xlsx")
                 
   
 conectividad_internacional <- read_file_srv("/srv/DataDNMYE/imet/internacional_empresas_completa.csv") 
@@ -49,37 +51,7 @@ conectividad_internacional <- read_file_srv("/srv/DataDNMYE/imet/internacional_e
 conectividad_cabotaje <- read_file_srv("/srv/DataDNMYE/imet/cabotaje_empresas_completa.csv") 
   
 
-#Armo ultimos meses
 
-ultimo_ti <- turismo_internacional_vias %>% 
-  tail(1) %>% 
-  pull(month)
-  
-ultimo_eoh <- eoh %>% 
-  tail(1) %>% 
-  pull(month)
-  
-ultimo_conectividad <- conectividad_internacional %>% 
-  tail(1) %>% 
-  pull(mes_local)
-
-ultimo_evyth <- turismo_interno %>% 
-  filter(row_number() !=n()) %>% #para cuando no queremos que salga la ultima fila (porque es otro trimestre)
-  tail(1) %>%
-  pull(trimestre)
-  
-ultimo_tur_mundo <- tur_mundo %>% 
-  tail(1) %>%
-  pull(mes)
-  
-ultimo_emae <- emae %>% 
-  tail(1) %>%
-  pull(month)
-  
-ultimo_empleo <- empleo %>% 
-  tail(1) %>%
-  pull(month) %>% 
-  as.numeric()
 
 
 #Armo bases para graficos
@@ -123,18 +95,19 @@ data_grafico_eoh <- eoh%>%
   #filter(year>=2018)
 
 data_grafico_empleo <- empleo %>% 
-  mutate_at(.vars = vars(everything()),
-            .funs = ~ as.numeric(.)) %>% 
-  select(year, month, empleo_hyr_ce, empleo_hyr_se) %>% 
-  mutate(date= lubridate::ym(paste(year, month, "-")),
+  select(-sector) %>% 
+  rename(empleo_hyr_ce=trabajadores_registrados,
+         empleo_hyr_se=trabajadores_registrados_desest) %>% 
+  mutate(year=as.numeric(substr(fecha, 1,4)),
+         month=as.numeric(substr(fecha, 6,7)),
          var_mensual=round(empleo_hyr_se/lag(empleo_hyr_se, n=1)-1,3))
   
 data_grafico_emae <- emae %>% 
   select(year, month, emae_hyr_ce) %>% 
   mutate(date= lubridate::ym(paste(year, month, "-")),
          var_ia_emae_hyr=round(emae_hyr_ce/lag(emae_hyr_ce, n=12)-1,2),
-         var_19_emae_hyr=round(emae_hyr_ce/lag(emae_hyr_ce, n=48)-1,2))
-  #filter(year>=2018)
+         var_19_emae_hyr=round(emae_hyr_ce/lag(emae_hyr_ce, n=48)-1,2)) %>% 
+  filter(year>=2017)
 
 data_grafico_conectividad_internacional  <-  conectividad_internacional %>% 
   rename(anio = anio_local, mes = mes_local,empresa = empresa_agrup_def) %>% 
@@ -165,5 +138,37 @@ data_grafico_conectividad_cabotaje  <-  conectividad_cabotaje %>%
              .funs = ~ as.numeric(.)) %>% 
    mutate(date= lubridate::ym(paste(anio, mes, "-")),
           var_ia=round(tur_mundo/lag(tur_mundo, n=12)-1,2))
-   
+
+ 
+ #Armo ultimos meses
+ 
+ ultimo_ti <- turismo_internacional_vias %>% 
+   tail(1) %>% 
+   pull(month)
+ 
+ ultimo_eoh <- eoh %>% 
+   tail(1) %>% 
+   pull(month)
+ 
+ ultimo_conectividad <- conectividad_internacional %>% 
+   tail(1) %>% 
+   pull(mes_local)
+ 
+ ultimo_evyth <- turismo_interno %>% 
+   filter(row_number() !=n()) %>% #para cuando no queremos que salga la ultima fila (porque es otro trimestre)
+   tail(1) %>%
+   pull(trimestre)
+ 
+ ultimo_tur_mundo <- tur_mundo %>% 
+   tail(1) %>%
+   pull(mes)
+ 
+ ultimo_emae <- emae %>% 
+   tail(1) %>%
+   pull(month)
+ 
+ ultimo_empleo <- data_grafico_empleo %>% 
+   tail(1) %>%
+   pull(month) %>% 
+   as.numeric()   
   
