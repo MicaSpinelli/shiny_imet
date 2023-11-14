@@ -35,7 +35,8 @@ tagList(dashboardPage(title = "ULTIMOS DATOS DEL TURISMO EN ARGENTINA",
              column(4, valueBoxOutput("box_tur_mundo", width = "100%"))
              
     )
-)))
+)),
+tags$footer(includeHTML("/srv/shiny-server/recursos/shiny_footer.html")))
 
 
 
