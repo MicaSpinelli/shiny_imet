@@ -1,6 +1,6 @@
 valueBoxSpark <- function(value, subtitle, description, minititle = NULL, 
                           icon = NULL, color = "aqua",
-                          idPlot, infoID, serieBtn) {
+                          idPlot, infoID, serieBtn, var_tiempo= "último mes") {
   
   #creo icono de info con id
   info_icon <- tags$small(
@@ -11,13 +11,18 @@ valueBoxSpark <- function(value, subtitle, description, minititle = NULL,
   serie_icon <- tags$small(
     prettyToggle(
       inputId = serieBtn,
-      label_on = "Ver serie completa", 
+      label_on = "Ver serie completa",
       icon_on = icon("chart-line"),
-      status_on = "info",
-      status_off = "info", 
-      label_off = "Ver último mes",
-      icon_off = icon("chart-simple")
-    )
+      status_on = "success",
+      status_off = "success",
+      label_off = paste0("Ver ",var_tiempo),
+      icon_off = icon("chart-simple"),
+      outline = TRUE,
+      value = FALSE,
+      plain = TRUE
+    ), 
+    style = "background-color: transparent !important"
+    
   )
   
   

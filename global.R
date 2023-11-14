@@ -79,7 +79,7 @@ data_grafico_evyth <- turismo_interno %>%
         turistas = ifelse(is.na(tur), 0, tur),
          variacion_tur = round(turistas/lag(turistas, n = 4)-1,2), 
          turistas = round(turistas/1000000,1),
-         fecha= paste0(trimestre,"° trim ",anio))
+         trim= paste0(trimestre,"° trim "))
 
 
 data_grafico_eoh <- eoh%>% 

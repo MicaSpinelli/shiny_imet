@@ -7,14 +7,17 @@
 #    http://shiny.rstudio.com/
 #
 
-dashboardPage(
-    dashboardHeader(title = div(icon('chart-line'),"ULTIMOS DATOS DEL TURISMO EN ARGENTINA"), titleWidth = 600,
-                    tags$li(a(
+tagList(dashboardPage(title = "ULTIMOS DATOS DEL TURISMO EN ARGENTINA",
+                       
+                       dashboardHeader(
+                         title = div(icon('chart-line'),"ULTIMOS DATOS DEL TURISMO EN ARGENTINA"), titleWidth = 600,
+                         tags$li(a(
                          href = 'https://www.yvera.tur.ar/sinta/',
                          img(src = 'https://tableros.yvera.tur.ar/recursos/logo_sinta.png',
                              height = "30px"),
                          style = "padding-top:10px; padding-bottom:10px;"),
-                         class = "dropdown")),
+                         class = "dropdown")
+                         ),
     dashboardSidebar(disable = TRUE),
     dashboardBody(
         fluidRow(column(4, valueBoxOutput("box_ti_receptivo",width = "100%")),
@@ -32,7 +35,7 @@ dashboardPage(
              column(4, valueBoxOutput("box_tur_mundo", width = "100%"))
              
     )
-))
+)))
 
 
 
