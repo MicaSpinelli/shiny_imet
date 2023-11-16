@@ -1,6 +1,14 @@
 ####################GRAFICOS####################################
 
 function(input, output) {
+  sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
+                 title = "Bienvenida", #titulo del popup 
+                 text = HTML(paste ("El tablero <b>ÚLTIMOS DATOS DEL TURISMO EN ARGENTINA</b> presenta los principales indicadores publicados en el", tags$a( href="https://www.yvera.tur.ar/sinta/",
+                                                                          "SINTA",target = '_blank'),"y, además, indicadores de otros organismos, que dan a conocer los resultados más recientes del turismo en Argentina y a nivel mundial.")),  #texto descriptivo, se pueden poner etiquetas html
+                 btn_labels = "OK",
+                 html = TRUE
+  )
+  
   
 ########TURISMO INTERNACIONAL#######################  
   #Creo y renderizo plotly a partir de ggplot
@@ -13,8 +21,8 @@ function(input, output) {
       geom_area(aes(period, receptivo), fill = "white", alpha = 0.3)+
       geom_line(colour="white",alpha = 0.8,
                 aes(period, receptivo, group = 1,
-                 text = paste('Fecha:', format(period,"%b. %y"), #argumento para etiqueta interactiva
-                              '<br>Viajes de turistas receptivos:',lbl_int(receptivo)))) +
+                 text = paste('Fecha:', format(period,"%b. %Y"), #argumento para etiqueta interactiva
+                              '<br>Viajes de turistas no residentes:',lbl_int(receptivo)))) +
       theme_void()
     
     } else {
@@ -24,8 +32,8 @@ function(input, output) {
         filter(month == ultimo_ti) %>% 
         ggplot(aes(period, receptivo, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
-                 aes(text = paste('Fecha:', format(period,"%b. %y"), #argumento para etiqueta interactiva
-                                  '<br>Viajes de turistas receptivos:',lbl_int(receptivo)))) +
+                 aes(text = paste('Fecha:', format(period,"%b. %Y"), #argumento para etiqueta interactiva
+                                  '<br>Viajes de turistas no residentes:',lbl_int(receptivo)))) +
         theme_void()
     }
     
@@ -39,9 +47,15 @@ function(input, output) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F)
-    
-  })
+      config(displayModeBar = F) %>% 
+      onRender("
+function(el, x) {
+  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
+}
+")
+  })   
+  
+
   
 #################EVYTH######################
   
@@ -78,7 +92,12 @@ function(input, output) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F)
+      config(displayModeBar = F) %>% 
+      onRender("
+function(el, x) {
+  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
+}
+")
   })
   
 ##############EOH VIAJEROS##############
@@ -90,7 +109,7 @@ function(input, output) {
       geom_area(aes(date, viajeros_tot), fill = "white", alpha = 0.3)+
       geom_line(colour="white",alpha = 0.8,
                aes(date, viajeros_tot, group = 1,
-                   text = paste('Fecha:', format(date,"%b. %y"), #argumento para etiqueta interactiva
+                   text = paste('Fecha:', format(date,"%b. %Y"), #argumento para etiqueta interactiva
                                 '<br>Viajeros hospedados:',format(viajeros_tot, decimal.mark = ","),"M"))) +
       theme_void()
     
@@ -101,7 +120,7 @@ function(input, output) {
         filter(month == ultimo_eoh) %>% 
         ggplot(aes(date, viajeros_tot, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
-                 aes(text = paste('Fecha:', format(date,"%b. %y"), #argumento para etiqueta interactiva
+                 aes(text = paste('Fecha:', format(date,"%b. %Y"), #argumento para etiqueta interactiva
                                   '<br>Viajeros hospedados:',format(viajeros_tot, decimal.mark = ","),"M"))) +
         theme_void()
     }
@@ -115,7 +134,12 @@ function(input, output) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F)
+      config(displayModeBar = F) %>% 
+      onRender("
+function(el, x) {
+  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
+}
+")
   })
   
 
@@ -128,7 +152,7 @@ function(input, output) {
       geom_area(aes(fecha, empleo_hyr_ce), fill = "white", alpha = 0.3)+
       geom_line(colour="white",alpha = 0.8, 
                 aes(fecha, empleo_hyr_ce, group=1,
-                    text = paste('Fecha:', format(fecha,"%b. %y"), #argumento para etiqueta interactiva
+                    text = paste('Fecha:', format(fecha,"%b. %Y"), #argumento para etiqueta interactiva
                                  '<br>Trabajadores:',format(lbl_decimal(empleo_hyr_ce),1),"mil"))) +
       theme_void()
     
@@ -139,7 +163,7 @@ function(input, output) {
         filter(month == ultimo_empleo) %>% 
         ggplot(aes(fecha, empleo_hyr_ce, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
-                 aes(text = paste('Fecha:', format(fecha,"%b. %y"), #argumento para etiqueta interactiva
+                 aes(text = paste('Fecha:', format(fecha,"%b. %Y"), #argumento para etiqueta interactiva
                                   '<br>Trabajadores:', format(lbl_decimal(empleo_hyr_ce),1),"mil"))) +
         theme_void()
     }
@@ -153,7 +177,12 @@ function(input, output) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F)
+      config(displayModeBar = F) %>% 
+      onRender("
+function(el, x) {
+  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
+}
+")
   })
   
 ###############EMAE#############################
@@ -162,10 +191,11 @@ function(input, output) {
     if (input$serie_emae == F) {
     
     grafico_emae_hyr <- ggplot(data_grafico_emae)+
-      geom_area(aes(date, var_ia_emae_hyr), fill = "white", alpha = 0.3)+
+      geom_area(aes(date, emae_hyr_ce), fill = "white", alpha = 0.3)+
       geom_line(colour="white",alpha = 0.8, 
-                aes(date, var_ia_emae_hyr, group=1,
-                    text = paste('Fecha:', format(date,"%b. %y"), #argumento para etiqueta interactiva
+                aes(date, emae_hyr_ce, group=1,
+                    text = paste('Fecha:', format(date,"%b. %Y"), #argumento para etiqueta interactiva
+                                 '<br>Índice (2004=100):',format(lbl_decimal(emae_hyr_ce),1),
                                  '<br>Var. i.a.:',format(lbl_percent(var_ia_emae_hyr), decimal.mark = ",")))) +
       theme_void()
     
@@ -174,9 +204,10 @@ function(input, output) {
       #Armo ggplot y lo guardo en objeto
       grafico_emae_hyr <- data_grafico_emae %>%
         filter(month == ultimo_emae) %>% 
-        ggplot(aes(date,var_ia_emae_hyr, group = 1 )) +
+        ggplot(aes(date,emae_hyr_ce, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
-                 aes(text = paste('Fecha:', format(date,"%b. %y"), #argumento para etiqueta interactiva
+                 aes(text = paste('Fecha:', format(date,"%b. %Y"), #argumento para etiqueta interactiva
+                                  '<br>Índice (2004=100):',format(lbl_decimal(emae_hyr_ce),1),
                                   '<br>Var. i.a.:',format(lbl_percent(var_ia_emae_hyr), decimal.mark = ",")))) +
         theme_void()
     }
@@ -190,7 +221,12 @@ function(input, output) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F)
+      config(displayModeBar = F) %>% 
+      onRender("
+function(el, x) {
+  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
+}
+")
   })
   
 ##############EOH PERNOCTES#################
@@ -202,7 +238,7 @@ function(input, output) {
       geom_area(aes(date, pernoc_tot), fill = "white", alpha = 0.3)+
       geom_line(colour="white",alpha = 0.8, group=1,
                 aes(date, pernoc_tot, 
-                    text = paste('Fecha:', format(date,"%b. %y"), #argumento para etiqueta interactiva
+                    text = paste('Fecha:', format(date,"%b. %Y"), #argumento para etiqueta interactiva
                                  '<br>Pernoctaciones:',format(pernoc_tot, decimal.mark = ","),"M"))) +
       theme_void()
     
@@ -213,7 +249,7 @@ function(input, output) {
         filter(month == ultimo_eoh) %>% 
         ggplot(aes(date,pernoc_tot, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
-                 aes(text = paste('Fecha:', format(date,"%b. %y"), #argumento para etiqueta interactiva
+                 aes(text = paste('Fecha:', format(date,"%b. %Y"), #argumento para etiqueta interactiva
                                   '<br>Pernoctaciones:',format(pernoc_tot, decimal.mark = ","),"M"))) +
         theme_void()
     }
@@ -226,7 +262,12 @@ function(input, output) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F)
+      config(displayModeBar = F) %>% 
+      onRender("
+function(el, x) {
+  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
+}
+")
   })
 ###############CONECTIVIDAD INTERNACIONAL#############################
   output$grafico_conectividad_int <- renderPlotly({
@@ -237,7 +278,7 @@ function(input, output) {
       geom_area(aes(date, pax), fill = "white", alpha = 0.3)+
       geom_line(colour="white",alpha = 0.8,
                 aes(date, pax, group=1,
-                   text = paste('Fecha:', format(date,"%b. %y"), #argumento para etiqueta interactiva
+                   text = paste('Fecha:', format(date,"%b. %Y"), #argumento para etiqueta interactiva
                                 '<br>Pasajeros:',format(pax_miles, decimal.mark = ","),"mil"))) +
       theme_void()
     
@@ -248,7 +289,7 @@ function(input, output) {
         filter(mes == ultimo_conectividad) %>% 
         ggplot(aes(date, pax, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
-                 aes(text = paste('Fecha:', format(date,"%b. %y"), #argumento para etiqueta interactiva
+                 aes(text = paste('Fecha:', format(date,"%b. %Y"), #argumento para etiqueta interactiva
                                   '<br>Pasajeros:',format(pax_miles, decimal.mark = ","),"mil"))) +
         theme_void()
     }
@@ -262,7 +303,12 @@ function(input, output) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F)
+      config(displayModeBar = F) %>% 
+      onRender("
+function(el, x) {
+  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
+}
+")
   })
   
 ###############CONECTIVIDAD CABOTAJE#############################
@@ -274,7 +320,7 @@ function(input, output) {
       geom_area(aes(date, pax), fill = "white", alpha = 0.3)+
       geom_line(colour="white",alpha = 0.8,
                 aes(date, pax, group=1,
-                    text = paste('Fecha:', format(date,"%b. %y"), #argumento para etiqueta interactiva
+                    text = paste('Fecha:', format(date,"%b. %Y"), #argumento para etiqueta interactiva
                                  '<br>Pasajeros:',format(pax_mill, decimal.mark = ","),"M"))) +
       theme_void()
     
@@ -285,7 +331,7 @@ function(input, output) {
         filter(mes == ultimo_conectividad) %>% 
         ggplot(aes(date,pax, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
-                 aes(text = paste('Fecha:', format(date,"%b. %y"), #argumento para etiqueta interactiva
+                 aes(text = paste('Fecha:', format(date,"%b. %Y"), #argumento para etiqueta interactiva
                                   '<br>Pasajeros:',format(pax_mill, decimal.mark = ","),"M"))) +
         theme_void()
     }
@@ -299,7 +345,12 @@ function(input, output) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F)
+      config(displayModeBar = F) %>% 
+      onRender("
+function(el, x) {
+  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
+}
+")
   })
 
 ###############TURISMO MUNDO#############################
@@ -311,8 +362,8 @@ function(input, output) {
       geom_area(aes(date, tur_mundo), fill = "white", alpha = 0.3)+
       geom_line(colour="white",alpha = 0.8,
                 aes(date, tur_mundo, group=1,
-                    text = paste('Fecha:', format(date,"%b. %y"), #argumento para etiqueta interactiva
-                                 '<br>Turistas:',format(tur_mundo, decimal.mark = ","),"M"))) +
+                    text = paste('Fecha:', format(date,"%b. %Y"), #argumento para etiqueta interactiva
+                                 '<br>Turistas:',lbl_decimal(tur_mundo,1),"M"))) +
       theme_void()
     } else {
       
@@ -321,8 +372,8 @@ function(input, output) {
         filter(mes == ultimo_tur_mundo) %>% 
         ggplot(aes(date,tur_mundo, group = 1 )) +
         geom_col(fill = "white", alpha = 0.6,
-                 aes(text = paste('Fecha:', format(date,"%b. %y"), #argumento para etiqueta interactiva
-                                  '<br>Turistas:',format(tur_mundo, decimal.mark = ","),"M"))) +
+                 aes(text = paste('Fecha:', format(date,"%b. %Y"), #argumento para etiqueta interactiva
+                                  '<br>Turistas:',lbl_decimal(tur_mundo,1),"M"))) +
         theme_void()
     }
     
@@ -335,7 +386,12 @@ function(input, output) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F)
+      config(displayModeBar = F) %>% 
+      onRender("
+function(el, x) {
+  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
+}
+")
   })
   
 ###########CREO LOS VALUE BOX###################  
@@ -372,7 +428,7 @@ function(input, output) {
     valueBoxSpark(
       value = lbl_int(ultimo_dato_ti), #indicador
       subtitle = ifelse(var_ia_ti>0, paste0("+",var_ia_ti," var. i.a."),paste0(var_ia_ti," var. i.a.")), #texto de abajo
-      description = paste0("viajes de turistas receptivos-",mes," ", anio), #texto debajo del indicador
+      description = paste0("viajes de turistas no residentes - ",mes," ", anio), #texto debajo del indicador
       minititle = "TURISMO INTERNACIONAL",  #texto de arriba
       icon = icon("plane-arrival"), #icono de fontawesome
       infoID = "tur_internacional", #id para icono de info
@@ -411,7 +467,7 @@ function(input, output) {
     valueBoxSpark(
       value = paste0 (ultimo_dato_evyth, " millones"), #indicador
       subtitle = ifelse(var_ia_evyth>0, paste0("+",lbl_percent(var_ia_evyth)," var. i.a."),paste0(lbl_percent(var_ia_evyth)," var. i.a.")), #texto de abajo
-      description = paste0("cantidad de turistas internos-",trim_evyth, anio_evyth), #texto debajo del indicador
+      description = paste0("turistas internos - ",trim_evyth, anio_evyth), #texto debajo del indicador
       minititle = "TURISMO INTERNO", #texto de arriba
       icon = icon("car"), #icono de fontawesome
       infoID = "tur_interno", #id para icono de info
@@ -451,7 +507,7 @@ function(input, output) {
     valueBoxSpark(
       value = paste0 (ultimo_dato_eoh_viajeros, " millones"), #indicador
       subtitle = ifelse(var_ia_eoh_viajeros>0, paste0("+",lbl_percent(var_ia_eoh_viajeros)," var. i.a."),paste0(lbl_percent(var_ia_eoh_viajeros)," var. i.a.")), #texto de abajo
-      description =  paste0("cantidad de viajeros hospedados-",mes_eoh, " ", anio_eoh), #texto debajo del indicador
+      description =  paste0("viajeros hospedados - ",mes_eoh, " ", anio_eoh), #texto debajo del indicador
       minititle ="OCUPACIÓN HOTELERA",  #texto de arriba
       icon = icon("hotel"), #icono de fontawesome
       infoID = "tur_eoh", #id para icono de info
@@ -481,16 +537,16 @@ function(input, output) {
       tail(1) %>% 
       pull(var_ia_emae_hyr)
     
-    var_19_emae_hyr <- data_grafico_emae%>% 
+    var_ia_emae_total <- data_grafico_emae%>% 
       tail(1) %>% 
-      pull(var_19_emae_hyr)
+      pull(var_ia_total)
     
     
     
     valueBoxSpark(
       value = ifelse (var_ia_emae_hyr>0, paste0("+",lbl_percent(var_ia_emae_hyr)," var. i.a."),paste0(lbl_percent(var_ia_emae_hyr)," var. i.a.")), #indicador
-      subtitle = ifelse(var_19_emae_hyr>0, paste0("+",lbl_percent(var_19_emae_hyr)," var. vs 2019"),paste0(lbl_percent(var_19_emae_hyr)," var. vs 2019")), #texto de abajo
-      description = paste0("act. económica en “Hoteles y Restaurantes”-", mes_emae, " ", anio_emae), #texto debajo del indicador
+      subtitle = ifelse(var_ia_emae_total>0, paste0("+",lbl_percent(var_ia_emae_total)," var. i.a. total economía"),paste0(lbl_percent(var_ia_emae_total)," var. i.a. total economía")), #texto de abajo
+      description = paste0("act. económica en “Hoteles y Restaurantes” - ", mes_emae, " ", anio_emae), #texto debajo del indicador
       minititle = "ESTIMADOR MENSUAL DE ACT. ECONÓMICA", #texto de arriba
       icon = icon("coins"), #icono de fontawesome
       infoID = "emae_hyr", #id para icono de info
@@ -521,16 +577,16 @@ function(input, output) {
       pull(empleo_hyr_ce) 
     
     
-    var_m_empleo_hyr <- data_grafico_empleo%>% 
+    var_ia_empleo_hyr <- data_grafico_empleo%>% 
       tail(1) %>% 
-      pull(var_mensual) 
+      pull(var_ia) 
     
     
     
     valueBoxSpark(
       value = paste0 (lbl_decimal(ultimo_dato_empleo_hyr_ce,1)," mil"), #indicador
-      subtitle = ifelse(var_m_empleo_hyr>0, paste0("+",lbl_percent(var_m_empleo_hyr)," var. mensual"),paste0(lbl_percent(var_m_empleo_hyr)," var. mensual")), #texto de abajo
-      description = paste0("trabajadores en “Hoteles y Restaurantes”-", mes_empleo, " ", anio_empleo), #texto debajo del indicador
+      subtitle = ifelse(var_ia_empleo_hyr>0, paste0("+",lbl_percent(var_ia_empleo_hyr)," var. i.a."),paste0(lbl_percent(var_ia_empleo_hyr)," var. i.a.")), #texto de abajo
+      description = paste0("trabajadores en “Hoteles y Restaurantes” - ", mes_empleo, " ", anio_empleo), #texto debajo del indicador
       minititle = "EMPLEO PRIVADO REGISTRADO", #texto de arriba
       icon = icon("briefcase"), #icono de fontawesome
       infoID = "empleo_hyr", #id para icono de info
@@ -570,7 +626,7 @@ function(input, output) {
     valueBoxSpark(
       value = paste0 (ultimo_dato_eoh_pernoctes, " millones"), #indicador
       subtitle = ifelse(var_ia_eoh_pernoctes>0, paste0("+",lbl_percent(var_ia_eoh_pernoctes)," var. i.a."),paste0(lbl_percent(var_ia_eoh_pernoctes)," var. i.a.")), #texto de abajo
-      description = paste0("cantidad de pernoctaciones-",mes_eoh, " ", anio_eoh), #texto debajo del indicador
+      description = paste0("pernoctaciones - ",mes_eoh, " ", anio_eoh), #texto debajo del indicador
       minititle ="OCUPACIÓN HOTELERA", #texto de arriba
       icon = icon("bed"), #icono de fontawesome
       infoID = "tur_eoh_p", #id para icono de info
@@ -610,7 +666,7 @@ function(input, output) {
     valueBoxSpark(
       value = paste0 (ultimo_dato_pax_int, " mil"), #indicador
       subtitle =  ifelse(var_ia_conectividad_int>0, paste0("+",lbl_percent(var_ia_conectividad_int)," var. i.a."),paste0(lbl_percent(var_ia_conectividad_int)," var. i.a.")), #texto de abajo
-      description = paste0("pasajeros en vuelos internacionales-", mes_conectividad, " ", anio_conectividad), #texto debajo del indicador
+      description = paste0("pasajeros en vuelos internacionales - ", mes_conectividad, " ", anio_conectividad), #texto debajo del indicador
       minititle = "CONECTIVIDAD AÉREA INTERNACIONAL", #texto de arriba
       icon = icon("plane-up"), #icono de fontawesome
       infoID = "conectividad_i", #id para icono de info
@@ -650,7 +706,7 @@ function(input, output) {
     valueBoxSpark(
       value = paste0 (ultimo_dato_pax_cab, " millones"), #indicador
       subtitle =  ifelse(var_ia_conectividad_cab>0, paste0("+",lbl_percent(var_ia_conectividad_cab)," var. i.a."),paste0(lbl_percent(var_ia_conectividad_cab)," var. i.a.")), #texto de abajo
-      description = paste0("pasajeros en vuelos de cabotaje-", mes_conectividad, " ", anio_conectividad), #texto debajo del indicador
+      description = paste0("pasajeros en vuelos de cabotaje - ", mes_conectividad, " ", anio_conectividad), #texto debajo del indicador
       minititle = "CONECTIVIDAD AÉREA DE CABOTAJE", #texto de arriba
       icon = icon("plane-up"), #icono de fontawesome
       infoID = "conectividad_c", #id para icono de info
@@ -679,8 +735,7 @@ function(input, output) {
     ultimo_dato_mundo <- data_grafico_mundo%>% 
       tail(1) %>%
       pull(tur_mundo) %>% 
-      as.numeric() %>% 
-      format(decimal.mark=",")
+      as.numeric()
     
     var_ia_mundo <- data_grafico_mundo %>% 
       tail(1) %>% 
@@ -689,9 +744,9 @@ function(input, output) {
     
     
     valueBoxSpark(
-      value = paste0(ultimo_dato_mundo, " millones"), #indicador
+      value = paste0(lbl_decimal(ultimo_dato_mundo,1), " millones"), #indicador
       subtitle =   ifelse(var_ia_mundo>0, paste0("+",lbl_percent(var_ia_mundo)," var. i.a."),paste0(lbl_percent(var_ia_mundo)," var. i.a.")), #texto de abajo
-      description = paste0("llegadas de turistas internacionales al mundo-",mes_mundo," ", anio_mundo), #texto debajo del indicador
+      description = paste0("llegadas de turistas internacionales al mundo - ",mes_mundo," ", anio_mundo), #texto debajo del indicador
       minititle = "TURISMO EN EL MUNDO",#texto de arriba
       icon = icon("earth-americas"), #icono de fontawesome
       infoID = "tur_mundo", #id para icono de info
@@ -747,7 +802,8 @@ function(input, output) {
     
     sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
                    title = "Estimador mensual de actividad económica (EMAE)", #titulo del popup
-                   text = HTML(paste("Para más información visitá el",tags$a( href="https://biblioteca.yvera.tur.ar/coyuntura.html",
+                   text = HTML(paste("Información proveniente del INDEC en base al", tags$a( href="https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-9-48",
+                                                                              "Estimador mensual de actividad económica (EMAE).",target = '_blank'),"Para más información visitá el",tags$a( href="https://biblioteca.yvera.tur.ar/coyuntura.html",
                                                                               "Informe mensual de estadísticas de turismo.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
                    btn_labels = NA,
                    html = TRUE#no mostrar botones que vienen por default
@@ -758,7 +814,8 @@ function(input, output) {
   
   sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
                  title = "Empleo privado registrado", #titulo del popup
-                 text = HTML(paste("Para más información visitá el",tags$a( href="https://biblioteca.yvera.tur.ar/coyuntura.html",
+                 text = HTML(paste("Información proveniente del MTEySS en base a la",tags$a( href="https://www.argentina.gob.ar/trabajo/estadisticas",
+                                                                            "Situación y Evolución del Trabajo Registrado (SIPA).",target = '_blank')," Para más información visitá el",tags$a( href="https://biblioteca.yvera.tur.ar/coyuntura.html",
                                                                             "Informe mensual de estadísticas de turismo.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
                  btn_labels = NA,
                  html = TRUE#no mostrar botones que vienen por default
@@ -805,7 +862,8 @@ function(input, output) {
     
     sendSweetAlert(type = "info", #tipo popup: info muestra el "¡"
                    title = "Turismo en el mundo", #titulo del popup
-                   text = HTML(paste("Para más información visitá el",tags$a( href="https://biblioteca.yvera.tur.ar/coyuntura.html",
+                   text = HTML(paste("Información proveniente del", tags$a( href="https://www.unwto.org/tourism-data/global-and-regional-tourism-performance",
+                                                                          "panel de datos de turismo de la OMT.",target = '_blank')," Para más información visitá el",tags$a( href="https://biblioteca.yvera.tur.ar/coyuntura.html",
                                                                               "Informe mensual de estadísticas de turismo.",target = '_blank'))),  #texto descriptivo, se pueden poner etiquetas html
                    btn_labels = NA,
                    html = TRUE#no mostrar botones que vienen por default

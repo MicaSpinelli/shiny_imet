@@ -17,6 +17,7 @@ library(lubridate)
 library(comunicacion)
 library(plotly) #para graficos interactivos
 library(shinyWidgets) #para los popup
+library(htmlwidgets) #para cambiar cursor
 
 #seteo lenguaje en español
 Sys.setlocale(locale = "es_AR.UTF-8")
@@ -100,14 +101,14 @@ data_grafico_empleo <- empleo %>%
          empleo_hyr_se=trabajadores_registrados_desest) %>% 
   mutate(year=as.numeric(substr(fecha, 1,4)),
          month=as.numeric(substr(fecha, 6,7)),
-         var_mensual=round(empleo_hyr_se/lag(empleo_hyr_se, n=1)-1,3))
+         var_ia=round(empleo_hyr_ce/lag(empleo_hyr_ce, n=12)-1,3))
   
 data_grafico_emae <- emae %>% 
-  select(year, month, emae_hyr_ce) %>% 
+  select(year, month, emae_hyr_ce, emae_total_ce) %>% 
   mutate(date= lubridate::ym(paste(year, month, "-")),
          var_ia_emae_hyr=round(emae_hyr_ce/lag(emae_hyr_ce, n=12)-1,2),
-         var_19_emae_hyr=round(emae_hyr_ce/lag(emae_hyr_ce, n=48)-1,2)) %>% 
-  filter(year>=2017)
+         var_19_emae_hyr=round(emae_hyr_ce/lag(emae_hyr_ce, n=48)-1,2),
+         var_ia_total=round(emae_total_ce/lag(emae_total_ce, n=12)-1,3))
 
 data_grafico_conectividad_internacional  <-  conectividad_internacional %>% 
   rename(anio = anio_local, mes = mes_local,empresa = empresa_agrup_def) %>% 

@@ -34,9 +34,14 @@ tagList(dashboardPage(title = "ULTIMOS DATOS DEL TURISMO EN ARGENTINA",
              column(4, valueBoxOutput("box_conectividad_int", width = "100%")),
              column(4, valueBoxOutput("box_tur_mundo", width = "100%"))
              
-    )
-)),
-tags$footer(includeHTML("/srv/shiny-server/recursos/shiny_footer.html")))
+    ), 
+    tags$head(
+        # Include our custom CSS
+        includeCSS("styles.css")
+    ))),
+    
+    tags$footer(includeHTML("/srv/shiny-server/recursos/shiny_footer.html")))
+    
 
 
 
