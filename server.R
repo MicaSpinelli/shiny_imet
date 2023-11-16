@@ -47,12 +47,7 @@ function(input, output) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F) %>% 
-      onRender("
-function(el, x) {
-  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
-}
-")
+      config(displayModeBar = F)
   })   
   
 
@@ -92,12 +87,7 @@ function(el, x) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F) %>% 
-      onRender("
-function(el, x) {
-  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
-}
-")
+      config(displayModeBar = F)
   })
   
 ##############EOH VIAJEROS##############
@@ -134,12 +124,7 @@ function(el, x) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F) %>% 
-      onRender("
-function(el, x) {
-  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
-}
-")
+      config(displayModeBar = F)
   })
   
 
@@ -177,12 +162,7 @@ function(el, x) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F) %>% 
-      onRender("
-function(el, x) {
-  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
-}
-")
+      config(displayModeBar = F)
   })
   
 ###############EMAE#############################
@@ -221,12 +201,7 @@ function(el, x) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F) %>% 
-      onRender("
-function(el, x) {
-  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
-}
-")
+      config(displayModeBar = F) 
   })
   
 ##############EOH PERNOCTES#################
@@ -262,12 +237,7 @@ function(el, x) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F) %>% 
-      onRender("
-function(el, x) {
-  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
-}
-")
+      config(displayModeBar = F)
   })
 ###############CONECTIVIDAD INTERNACIONAL#############################
   output$grafico_conectividad_int <- renderPlotly({
@@ -303,12 +273,7 @@ function(el, x) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F) %>% 
-      onRender("
-function(el, x) {
-  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
-}
-")
+      config(displayModeBar = F) 
   })
   
 ###############CONECTIVIDAD CABOTAJE#############################
@@ -345,12 +310,7 @@ function(el, x) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F) %>% 
-      onRender("
-function(el, x) {
-  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
-}
-")
+      config(displayModeBar = F) 
   })
 
 ###############TURISMO MUNDO#############################
@@ -386,12 +346,7 @@ function(el, x) {
         paper_bgcolor = "transparent",
         plot_bgcolor = "transparent"
       ) %>%
-      config(displayModeBar = F) %>% 
-      onRender("
-function(el, x) {
-  Plotly.d3.select('.cursor-crosshair').style('cursor', 'default')
-}
-")
+      config(displayModeBar = F) 
   })
   
 ###########CREO LOS VALUE BOX###################  

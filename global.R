@@ -3,27 +3,20 @@
 #Colores para value box https://rdrr.io/cran/shinydashboard/man/validColors.html
 #Iconos para value box https://fontawesome.com/search?q=hotel&o=r&m=free&s=solid
 
-library(googlesheets4)
+
 library(tidyverse)
-library(gt)
-library(glue)
-library(foreign)
 library(herramientas)
-library(webshot2)
 library(shiny)
 library(shinydashboard)
-library(highcharter)
 library(lubridate)
 library(comunicacion)
 library(plotly) #para graficos interactivos
 library(shinyWidgets) #para los popup
-library(htmlwidgets) #para cambiar cursor
+library(shinycssloaders) #para los iconos de "cargando"
+
 
 #seteo lenguaje en español
 Sys.setlocale(locale = "es_AR.UTF-8")
-
-googlesheets4::gs4_deauth()
-
 
 #Source para cargar la función 
 source("custom_box.R")

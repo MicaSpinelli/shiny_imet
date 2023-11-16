@@ -35,7 +35,7 @@ valueBoxSpark <- function(value, subtitle, description, minititle = NULL,
       if(!is.null(minititle)) h4(minititle),#tags$small(minititle, style = "color: white;"),
       h3(value),
       if (!is.null(description)) h5(description),
-      plotlyOutput(idPlot, width = "auto", height = 100),
+      plotlyOutput(idPlot, width = "auto", height = 100) %>% withSpinner(color = "white"),
       serie_icon,
       info_icon,
       h4(subtitle)
