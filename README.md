@@ -1,0 +1,3 @@
+# Tablero interactivo: Últimos datos del turismo en Argentina
+
+El tablero [ÚLTIMOS DATOS DEL TURISMO EN ARGENTINA](https://tableros.yvera.tur.ar/tablero_ultimos_datos/) presenta los principales indicadores publicados en el [Sistema de Información Turística de la Argentina (SINTA)](yvera.tur.ar/sinta), permitiendo conocer los resultados más recientes del turismo receptivo, la ocupación hotelera, el turismo interno y la conectividad aérea en nuestro país. A su vez, se presentan los resultados de indicadores relativos al turismo elaborados por otros organismos, como el Estimador Mensual de Actividad Económica (EMAE), el empleo privado registrado (MTEySS) y las llegadas de turistas a nivel mundial (OMT).
