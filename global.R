@@ -33,17 +33,17 @@ turismo_interno <- read_file_srv("/srv/DataDNMYE/imet/serie_evyth.csv")
 eoh <- read_file_srv("/srv/DataDNMYE/imet/eoh_imet.csv") %>% 
   mutate(year= as.numeric(str_sub(indice_tiempo, end = 4L)),
          month= as.numeric(str_sub(indice_tiempo, start = 6L, end = 7L))) 
-calendario_url <- read_file_srv("/url_calendario.rds")
-calendario <- googlesheets4::read_sheet(calendario_url)
+#calendario_url <- read_file_srv("/url_calendario.rds")
+#calendario <- googlesheets4::read_sheet(calendario_url)
 
-fecha_eoh <- calendario %>% 
-  mutate(fecha = lubridate::as_datetime(glue::glue("{anio}-{mes}-{dia} 16:00:00 UTC"))) %>% 
-  filter(str_detect(titulo, "EOH") & anio == lubridate::year(Sys.time()) & mes == lubridate::month(Sys.time()))
-
-if (Sys.time()<fecha_eoh$fecha){
-  eoh <- eoh %>% 
-    filter(row_number() !=n())} else{
-      eoh <- eoh}
+# fecha_eoh <- calendario %>% 
+#   mutate(fecha = lubridate::as_datetime(glue::glue("{anio}-{mes}-{dia} 16:00:00 UTC"))) %>% 
+#   filter(str_detect(titulo, "EOH") & anio == lubridate::year(Sys.time()) & mes == lubridate::month(Sys.time()))
+# 
+# if (Sys.time()<fecha_eoh$fecha){
+#   eoh <- eoh %>% 
+#     filter(row_number() !=n())} else{
+#       eoh <- eoh}
 
 emae <- read_file_srv("/srv/DataDNMYE/economia2/emae_imet.csv") 
 
