@@ -35,6 +35,12 @@ tagList(dashboardPage(title = "ULTIMOS DATOS DEL TURISMO EN ARGENTINA",
              column(4, valueBoxOutput("box_tur_mundo", width = "100%"))
              
     ), 
+    fluidRow(width = 12,
+             h5("        Aquí puede acceder al último ", 
+                tags$a(href="https://biblioteca.yvera.tur.ar/coyuntura.html", 
+                       target = '_blank', 
+                       "Informe Mensual de Estadísticas de Turismo (IMET)"))
+    ),
     tags$head(
         # Include our custom CSS
         includeCSS("styles.css")
