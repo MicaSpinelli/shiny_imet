@@ -85,7 +85,7 @@ data_grafico_evyth <- turismo_interno %>%
   select(anio, trimestre,tur) %>% 
   mutate(date= lubridate::yq(paste(anio, trimestre, "-")),
         turistas = ifelse(is.na(tur), 0, tur),
-         variacion_tur = round(turistas/lag(turistas, n = 4)-1,2), 
+         variacion_tur = turistas/lag(turistas, n = 4)-1, 
          turistas = round(turistas/1000000,1),
          trim= paste0(trimestre,"° trim "))
 
@@ -98,8 +98,8 @@ data_grafico_eoh <- eoh%>%
          pernoc_total= (pernoc_res+pernoc_nores)/1000000,
          viajeros_tot= round(viajeros_total,1),
          pernoc_tot= round(pernoc_total,1),
-         var_ia_viajeros=round(viajeros_total/lag(viajeros_total, n=12)-1,2),
-         var_ia_pernoc=round(pernoc_total/lag(pernoc_total, n=12)-1,2)) 
+         var_ia_viajeros=viajeros_total/lag(viajeros_total, n=12)-1,
+         var_ia_pernoc=pernoc_total/lag(pernoc_total, n=12)-1) 
   #filter(year>=2018)
 
 data_grafico_empleo <- empleo %>% 
@@ -108,14 +108,14 @@ data_grafico_empleo <- empleo %>%
          empleo_hyr_se=trabajadores_registrados_desest) %>% 
   mutate(year=as.numeric(substr(fecha, 1,4)),
          month=as.numeric(substr(fecha, 6,7)),
-         var_ia=round(empleo_hyr_ce/lag(empleo_hyr_ce, n=12)-1,3))
+         var_ia=empleo_hyr_ce/lag(empleo_hyr_ce, n=12)-1)
   
 data_grafico_emae <- emae %>% 
   select(year, month, emae_hyr_ce, emae_total_ce) %>% 
   mutate(date= lubridate::ym(paste(year, month, "-")),
-         var_ia_emae_hyr=round(emae_hyr_ce/lag(emae_hyr_ce, n=12)-1,2),
-         var_19_emae_hyr=round(emae_hyr_ce/lag(emae_hyr_ce, n=48)-1,2),
-         var_ia_total=round(emae_total_ce/lag(emae_total_ce, n=12)-1,3))
+         var_ia_emae_hyr=emae_hyr_ce/lag(emae_hyr_ce, n=12)-1,
+         var_19_emae_hyr=emae_hyr_ce/lag(emae_hyr_ce, n=48)-1,
+         var_ia_total=emae_total_ce/lag(emae_total_ce, n=12)-1)
 
 data_grafico_conectividad_internacional  <-  conectividad_internacional %>% 
   rename(anio = anio_local, mes = mes_local,empresa = empresa_agrup_def) %>% 
@@ -125,7 +125,7 @@ data_grafico_conectividad_internacional  <-  conectividad_internacional %>%
   summarise(pax=sum(pax)) %>% 
   ungroup() %>% 
   mutate(date= lubridate::ym(paste(anio, mes, "-")),
-         var_ia_pax_int=round(pax/lag(pax, n=12)-1,3),
+         var_ia_pax_int=pax/lag(pax, n=12)-1,
          pax_miles=round(pax/1000,1))
   
 
@@ -138,14 +138,14 @@ data_grafico_conectividad_cabotaje  <-  conectividad_cabotaje %>%
   summarise(pax=sum(pax)) %>% 
   ungroup() %>% 
   mutate(date= lubridate::ym(paste(anio, mes, "-")),
-         var_ia_pax_cab=round(pax/lag(pax, n=12)-1,3),
+         var_ia_pax_cab=pax/lag(pax, n=12)-1,
          pax_mill=round(pax/1000000,1))
   
  data_grafico_mundo <- tur_mundo %>%
    mutate_at(.vars = vars(everything()),
              .funs = ~ as.numeric(.)) %>% 
    mutate(date= lubridate::ym(paste(anio, mes, "-")),
-          var_ia=round(tur_mundo/lag(tur_mundo, n=12)-1,2))
+          var_ia=tur_mundo/lag(tur_mundo, n=12)-1)
 
  
  #Armo ultimos meses
