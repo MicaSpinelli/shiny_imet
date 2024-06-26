@@ -17,9 +17,12 @@ tagList(dashboardPage(title = "ULTIMOS DATOS DEL TURISMO EN ARGENTINA",
                              height = "30px"),
                          style = "padding-top:10px; padding-bottom:10px;"),
                          class = "dropdown")
+                         
                          ),
     dashboardSidebar(disable = TRUE),
     dashboardBody(
+        tags$head(includeHTML("/srv/DataDNMYE/login_shiny/ultimos-datos.html"))
+        ,
         fluidRow(column(4, valueBoxOutput("box_ti_receptivo",width = "100%")),
                  column(4, valueBoxOutput("box_evyth_viajeros", width = "100%")),
                  column(4, valueBoxOutput("box_eoh_viajeros", width = "100%"))
