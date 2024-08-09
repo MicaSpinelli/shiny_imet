@@ -382,7 +382,7 @@ function(input, output) {
     #uso función personalizada
     valueBoxSpark(
       value = lbl_int(ultimo_dato_ti), #indicador
-      subtitle = ifelse(var_ia_ti>0, paste0("+",var_ia_ti," var. i.a."),paste0(var_ia_ti," var. i.a.")), #texto de abajo
+      subtitle = ifelse(ultimo_dato_ti/interanual_dato_ti-1>0, paste0("+",var_ia_ti," var. i.a."),paste0(var_ia_ti," var. i.a.")), #texto de abajo
       description = paste0("viajes de turistas no residentes - ",mes," ", anio), #texto debajo del indicador
       minititle = "TURISMO INTERNACIONAL",  #texto de arriba
       icon = icon("plane-arrival"), #icono de fontawesome
