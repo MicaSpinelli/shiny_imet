@@ -81,7 +81,7 @@ data_grafico_ti <- turismo_internacional_vias %>%
 
 
 data_grafico_evyth <- turismo_interno %>%
-  filter(row_number() !=n()) %>% #para cuando no queremos que salga la ultima fila (porque es otro trimestre)
+  #filter(row_number() !=n()) %>% #para cuando no queremos que salga la ultima fila (porque es otro trimestre)
   select(anio, trimestre,tur) %>% 
   mutate(date= lubridate::yq(paste(anio, trimestre, "-")),
         turistas = ifelse(is.na(tur), 0, tur),
@@ -164,7 +164,7 @@ data_grafico_conectividad_cabotaje  <-  conectividad_cabotaje %>%
    pull(mes_local)
  
  ultimo_evyth <- turismo_interno %>% 
-   filter(row_number() !=n()) %>% #para cuando no queremos que salga la ultima fila (porque es otro trimestre)
+   #filter(row_number() !=n()) %>% #para cuando no queremos que salga la ultima fila (porque es otro trimestre)
    tail(1) %>%
    pull(trimestre)
  
