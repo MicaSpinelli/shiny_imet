@@ -36,18 +36,18 @@ h1, h2 { font-weight: 400;
   
   /* logo */
     .skin-blue .main-header .logo {
-      background-color: #37BBED;
+      background-color: #252C4F;
     }
   
   /* logo when hovered */
     .skin-blue .main-header .logo:hover {
-      background-color: #37BBED;
+      background-color: #252C4F;
         font-family: 'Encode Sans Normal', Helvetica;
     }
   
   /* navbar (rest of the header) */
     .skin-blue .main-header .navbar {
-      background-color: #37BBED;
+      background-color: #252C4F;
         font-family: 'Encode Sans Normal', Helvetica;
     }        
   
@@ -78,7 +78,7 @@ h1, h2 { font-weight: 400;
   
   /* toggle button when hovered  */                    
     .skin-blue .main-header .navbar .sidebar-toggle:hover{
-      background-color: #37BBED;
+      background-color: #252C4F;
         font-family: 'Encode Sans Normal', Helvetica;
     }
   
@@ -93,7 +93,7 @@ h1, h2 { font-weight: 400;
     font-size: 1.5rem;
     font-style: italic;
     color: white;
-    background-color: #37BBED;
+    background-color: #252C4F;
       height: auto;
     padding: 20px;
   }

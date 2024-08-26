@@ -13,9 +13,9 @@ library(comunicacion)
 library(plotly) #para graficos interactivos
 library(shinyWidgets) #para los popup
 library(shinycssloaders) #para los iconos de "cargando"
-library(googlesheets4)
+#library(googlesheets4)
 
-googlesheets4::gs4_deauth()
+#googlesheets4::gs4_deauth()
 
 
 #seteo lenguaje en español
